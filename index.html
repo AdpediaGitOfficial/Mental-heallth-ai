@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spandan — End-to-End Clickable Prototype</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Nunito+Sans:wght@300;400;600;700;800&display=swap');
+
+:root{
+  --black:#050506;
+  --indigo:#100F1D;
+  --steel:#3F5163;
+  --chrome:#7D94A5;
+  --ice:#E9EEF2;
+  --muted:#8FA1AF;
+  --mind:#00D4FF;
+  --body:#39FF9E;
+  --coral:#FF4B4B;
+  --amber:#FFB627;
+  --serif:'Playfair Display', Georgia, serif;
+  --sans:'Nunito Sans', -apple-system, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#020203;font-family:var(--sans);color:var(--ice);min-height:100%}
+body{display:flex;flex-direction:column;align-items:center;padding:26px 16px 60px}
+
+/* ---------- mock chrome ---------- */
+.mock-header{text-align:center;margin-bottom:18px}
+.mock-header h1{font-family:var(--serif);font-weight:500;font-size:28px;letter-spacing:.5px}
+.mock-header p{color:var(--muted);font-size:12.5px;margin-top:4px;max-width:420px}
+.mock-header .brand{color:var(--coral);font-weight:800;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+
+.toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.toolbar button{
+  background:var(--indigo);border:1px solid #1e2233;color:var(--muted);
+  font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.4px;
+  padding:7px 13px;border-radius:999px;cursor:pointer;transition:.2s;
+}
+.toolbar button:hover{color:var(--ice);border-color:var(--steel)}
+.toolbar button:focus-visible{outline:2px solid var(--mind);outline-offset:2px}
+.toolbar .jump{position:relative}
+.jump-menu{position:absolute;top:38px;left:50%;transform:translateX(-50%);background:#0b0e18;border:1px solid #232a3a;border-radius:14px;padding:8px;display:none;grid-template-columns:1fr 1fr;gap:4px;z-index:50;width:280px;max-height:320px;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.7)}
+.jump-menu.open{display:grid}
+.jump-menu b{grid-column:1/3;color:var(--coral);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 6px 3px}
+.jump-menu button{background:none;border:none;color:var(--muted);font-size:10.5px;text-align:left;padding:6px 8px;border-radius:8px;font-weight:600}
+.jump-menu button:hover{background:#161b28;color:var(--ice)}
+
+/* ---------- phone ---------- */
+.phone{
+  width:376px;height:770px;background:var(--black);
+  border-radius:42px;border:1px solid #232a3a;
+  box-shadow:0 0 0 8px #0b0d14, 0 30px 80px rgba(0,0,0,.8), 0 0 90px rgba(0,212,255,.05);
+  overflow:hidden;position:relative;
+}
+.particles{position:absolute;inset:0;pointer-events:none;z-index:0}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:15px 24px 0;font-size:12px;font-weight:700;color:var(--muted);position:relative;z-index:6}
+.dots{letter-spacing:2px;color:var(--steel)}
+
+.viewport{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column}
+.content{position:relative;flex:1;padding:6px 26px 26px;display:flex;flex-direction:column;overflow-y:auto;animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.content{animation:none}.circle{animation:none!important}}
+
+/* ---------- top bar (onboarding) ---------- */
+.topbar{display:flex;align-items:center;gap:12px;padding-top:8px;margin-bottom:6px;min-height:26px}
+.back{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;width:26px}
+.back:hover{color:var(--ice)}
+.phaselabel{font-size:9.5px;font-weight:800;letter-spacing:1.8px;color:var(--muted);text-transform:uppercase}
+.progress{display:flex;gap:3px;margin:10px 0 20px}
+.progress span{height:3px;flex:1;border-radius:2px;background:#1c2130;transition:.3s}
+.progress span.done{background:var(--coral)}
+
+/* ---------- typography / shared ---------- */
+h2.title{font-family:var(--serif);font-weight:500;font-size:25px;line-height:1.25;margin-bottom:8px}
+.sub{color:var(--muted);font-size:13.5px;line-height:1.5;margin-bottom:20px}
+.spacer{flex:1;min-height:14px}
+
+.cta{
+  margin-top:14px;background:var(--coral);color:#fff;border:none;border-radius:999px;
+  font-family:var(--sans);font-weight:800;font-size:15px;padding:15px;width:100%;cursor:pointer;
+  letter-spacing:.3px;box-shadow:0 8px 26px rgba(255,75,75,.28);transition:.2s;
+}
+.cta:hover:not(:disabled){filter:brightness(1.08)}
+.cta:disabled{background:#20242f;color:#4a5260;box-shadow:none;cursor:not-allowed}
+.cta.ghost{background:none;box-shadow:none;color:var(--muted);font-weight:600;font-size:13px;padding:11px;margin-top:4px}
+.cta.ghost:hover{color:var(--ice)}
+.skip{color:var(--muted);font-size:12.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin:14px auto 0;display:inline-block;background:none;border:none;font-family:var(--sans)}
+.skip:hover{color:var(--ice)}
+
+.hint{
+  border:1px solid rgba(255,75,75,.5);border-radius:14px;padding:13px 15px;
+  font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:18px;background:rgba(255,75,75,.03);
+}
+
+/* option list (single-select rows) */
+.opt{width:100%;text-align:left;border:1px solid #1e2433;background:var(--indigo);border-radius:15px;
+  padding:15px 17px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;font-weight:700;font-size:14px;color:var(--ice);font-family:var(--sans);transition:.15s}
+.opt:hover{border-color:var(--steel)}
+.opt small{display:block;color:var(--muted);font-weight:600;font-size:11.5px;margin-top:3px}
+.opt.selected{border-color:var(--coral);box-shadow:0 0 0 1px var(--coral)}
+.opt.emerald.selected{border-color:var(--body);box-shadow:0 0 0 1px var(--body)}
+.opt.emerald.selected .tick{color:var(--body)}
+.opt .tick{color:var(--coral);font-size:15px;opacity:0}
+.opt.selected .tick{opacity:1}
+.badge{background:var(--coral);color:#fff;font-size:9px;font-weight:800;letter-spacing:.7px;padding:4px 9px;border-radius:999px;text-transform:uppercase}
+
+/* segmented control */
+.seg{display:flex;gap:8px;margin-bottom:6px}
+.seg-opt{flex:1;text-align:center;border:1px solid #1e2433;background:var(--indigo);border-radius:12px;padding:12px 6px;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer;transition:.15s;font-family:var(--sans)}
+.seg-opt:hover{color:var(--ice)}
+.seg-opt.selected{border-color:var(--coral);color:var(--ice);box-shadow:0 0 0 1px var(--coral)}
+.label-mini{font-size:10px;font-weight:800;letter-spacing:1.6px;color:var(--muted);margin:16px 0 8px;text-transform:uppercase}
+
+/* chips (multi-select) */
+.chipgrid{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+.chip{border:1px solid #1e2433;background:var(--indigo);color:var(--muted);border-radius:999px;
+  font-size:13px;font-weight:700;padding:11px 17px;cursor:pointer;transition:.15s;font-family:var(--sans)}
+.chip:hover{color:var(--ice);border-color:var(--steel)}
+.chip.selected{border-color:var(--body);color:var(--ice);box-shadow:0 0 0 1px var(--body);background:rgba(57,255,158,.06)}
+
+/* text fields */
+.tf{width:100%;background:var(--indigo);border:1px solid #232a3a;border-radius:14px;padding:15px 16px;
+  color:var(--ice);font-size:15px;font-family:var(--sans);font-weight:600;outline:none;transition:.15s}
+.tf::placeholder{color:#4a5260}
+.tf:focus{border-color:var(--mind)}
+.tf.err{border-color:var(--coral)}
+.field-err{color:var(--coral);font-size:12px;margin-top:8px;font-weight:600;display:none}
+.field-err.show{display:block}
+.prefix-field{display:flex;align-items:center;gap:8px;background:var(--indigo);border:1px solid #232a3a;border-radius:14px;padding:0 16px}
+.prefix-field span{color:var(--muted);font-weight:800;font-size:15px}
+.prefix-field input{flex:1;background:none;border:none;padding:15px 0;color:var(--ice);font-size:15px;font-weight:600;outline:none;font-family:var(--sans)}
+
+/* slider */
+.slider-wrap{margin-top:20px}
+.bubble{background:var(--indigo);border:1px solid var(--steel);border-radius:12px;display:inline-block;
+  padding:8px 16px;font-size:22px;font-weight:800;color:var(--ice);margin-bottom:18px}
+.bubble small{font-size:12px;color:var(--muted);font-weight:600;margin-left:3px}
+input[type=range]{width:100%;appearance:none;-webkit-appearance:none;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--body),#1c2130);outline:none}
+input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ice);border:4px solid var(--body);cursor:pointer;box-shadow:0 0 14px rgba(57,255,158,.5)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--ice);border:4px solid var(--body);cursor:pointer}
+.range-labels{display:flex;justify-content:space-between;color:var(--steel);font-size:11px;font-weight:700;margin-top:10px}
+
+/* toggle rows (consent) */
+.toggle-row{display:flex;justify-content:space-between;align-items:center;border:1px solid #1e2433;background:var(--indigo);border-radius:15px;padding:15px 17px;margin-bottom:10px;cursor:pointer}
+.toggle-row b{font-size:14px;font-weight:700}
+.toggle-row small{display:block;color:var(--muted);font-weight:600;font-size:11px;margin-top:3px}
+.toggle-row .req{color:var(--coral);font-size:9.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.switch{width:44px;height:26px;border-radius:999px;background:#232a3a;position:relative;transition:.2s;flex-shrink:0;margin-left:12px}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--ice);transition:.2s}
+.toggle-row.on .switch{background:var(--body)}
+.toggle-row.on .switch::after{left:21px}
+.linkrow{color:var(--mind);font-size:12.5px;font-weight:700;text-decoration:underline;text-underline-offset:3px;margin:8px 2px 2px;cursor:pointer;display:inline-block}
+
+/* welcome */
+.logo-rings{display:flex;gap:10px;justify-content:center;margin:56px 0 22px}
+.logo-rings i{width:44px;height:44px;border-radius:50%;border:3px solid var(--body);display:block;animation:pulsering 3s ease-in-out infinite}
+.logo-rings i:last-child{border-color:var(--mind);animation-delay:1.5s}
+@keyframes pulsering{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.08);opacity:1}}
+.wordmark{font-family:var(--serif);font-size:44px;text-align:center;font-weight:500}
+.tagline{text-align:center;color:var(--muted);font-family:var(--serif);font-style:italic;font-size:16px;margin-top:6px}
+.value{font-family:var(--serif);font-size:23px;text-align:center;line-height:1.4;margin:52px 18px 0;font-weight:400}
+
+/* breathing */
+.breathe-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px}
+.circle{width:180px;height:180px;border-radius:50%;border:2px solid rgba(0,212,255,.85);
+  background:radial-gradient(circle, rgba(0,212,255,.16), rgba(0,212,255,.02) 70%);
+  box-shadow:0 0 60px rgba(0,212,255,.25), inset 0 0 40px rgba(0,212,255,.12);transition:transform .1s linear}
+.breathe-label{font-family:var(--serif);font-size:21px;color:var(--ice)}
+.round{color:var(--steel);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+
+/* dual ring */
+.rings{display:flex;gap:16px;justify-content:center}
+.ring{position:relative;width:126px;height:126px}
+.ring svg{transform:rotate(-90deg)}
+.ring .track{stroke:#171c29;fill:none;stroke-width:9}
+.ring .fill{fill:none;stroke-width:9;stroke-linecap:round;stroke-dasharray:326;animation:ringfill 1.4s ease forwards}
+.ring.dashed .fill{stroke-dasharray:6 8;animation:none;opacity:.5}
+@keyframes ringfill{from{stroke-dashoffset:326}}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
+.ring .num b{font-size:30px;font-weight:800}
+.ring .num span{font-size:9px;letter-spacing:2px;font-weight:800;color:var(--muted);margin-top:2px}
+
+/* snapshot */
+.wq-card{border:1px solid rgba(255,75,75,.4);background:rgba(255,75,75,.04);border-radius:18px;padding:20px;text-align:center;margin:8px 0 20px}
+.wq-card .n{font-family:var(--serif);font-size:52px;color:var(--coral);line-height:1}
+.wq-card .band{color:var(--ice);font-weight:700;font-size:14px;margin-top:6px}
+.flag{display:flex;align-items:center;gap:11px;border:1px solid #1e2433;background:var(--indigo);border-radius:13px;padding:13px 15px;margin-bottom:9px;font-size:13.5px;font-weight:700}
+.flag i{width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;font-style:normal}
+.flag.good i{background:var(--body)}
+
+/* plan */
+.plan-tier{margin-bottom:16px}
+.plan-tier .t{font-size:10px;font-weight:800;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.plan-tier .t::after{content:'';flex:1;height:1px;background:#1a1f2c}
+.plan-item{border:1px solid #1e2433;background:var(--indigo);border-radius:13px;padding:13px 15px;margin-bottom:8px;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:11px}
+.plan-item i{width:22px;height:22px;border-radius:6px;background:rgba(57,255,158,.12);border:1px solid var(--body);flex-shrink:0}
+.plan-item.mind i{background:rgba(0,212,255,.12);border-color:var(--mind)}
+.plan-item.coral i{background:rgba(255,75,75,.12);border-color:var(--coral)}
+
+/* ===== main app ===== */
+.appbar{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 2px}
+.appbar .ttl{font-family:var(--serif);font-size:20px;font-weight:500}
+.bell{background:none;border:none;color:var(--muted);font-size:19px;cursor:pointer;position:relative}
+.bell:hover{color:var(--ice)}
+.bell .dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--coral);border-radius:50%}
+.greet{font-family:var(--serif);font-size:23px;margin:6px 0 20px}
+
+.action{background:var(--indigo);border:1px solid rgba(0,212,255,.35);border-radius:18px;padding:15px 17px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.2s;margin-top:22px}
+.action .play{width:42px;height:42px;border-radius:50%;background:rgba(0,212,255,.12);border:1px solid var(--mind);display:flex;align-items:center;justify-content:center;color:var(--mind);font-size:14px;flex-shrink:0}
+.action b{display:block;font-size:14px}
+.action span{color:var(--muted);font-size:12px}
+.action.done{opacity:.55;border-color:#1e2433}
+.action.done .play{border-color:var(--chrome);color:var(--ice);background:none}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.pill{background:#0c0e18;border:1px solid #1e2433;color:var(--muted);border-radius:999px;font-size:11px;font-weight:700;padding:7px 12px}
+.pill.amber{border-color:rgba(255,182,39,.5);color:var(--amber)}
+.ladder{margin-bottom:13px}
+.ladder label{font-size:10px;font-weight:800;letter-spacing:1.4px;color:var(--muted)}
+.bar{height:6px;border-radius:4px;background:#171c29;margin-top:7px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px}
+.nudge{color:var(--coral);font-size:12.5px;font-weight:700;margin-top:16px;cursor:pointer}
+.nudge:hover{text-decoration:underline}
+
+/* chat */
+.chat-head{padding:8px 0 12px;border-bottom:1px solid #171c29;margin-bottom:14px}
+.chat-head b{font-size:17px}
+.chat-head span{display:block;color:var(--steel);font-size:10px;font-weight:800;letter-spacing:.6px;margin-top:2px}
+.chat-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.msg{max-width:82%;border-radius:16px;padding:11px 14px;font-size:13.5px;line-height:1.5;margin-bottom:8px}
+.msg.ayu{border:1px solid rgba(255,75,75,.45);background:rgba(255,75,75,.04);border-bottom-left-radius:5px;align-self:flex-start}
+.msg.user{align-self:flex-end;background:rgba(57,255,158,.08);border:1px solid rgba(57,255,158,.25);border-bottom-right-radius:5px}
+.sources{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--steel);border-radius:999px;color:var(--muted);font-size:10.5px;font-weight:700;padding:5px 11px;margin:0 0 12px;cursor:pointer}
+.sources-detail{align-self:flex-start;font-size:11px;color:var(--muted);border-left:2px solid var(--steel);padding:4px 10px;margin:-6px 0 12px;line-height:1.6;display:none}
+.sources-detail.open{display:block}
+.crisis{border:1.5px solid var(--amber);border-radius:16px;background:rgba(255,182,39,.05);padding:15px;margin:6px 0 12px;align-self:stretch}
+.crisis b{font-size:14px;display:block;margin-bottom:5px}
+.crisis p{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:12px}
+.crisis button{background:var(--amber);color:#161000;border:none;border-radius:999px;font-weight:800;font-family:var(--sans);font-size:12.5px;padding:9px 16px;cursor:pointer}
+.crisis .lines{display:none;margin-top:12px;border-top:1px solid rgba(255,182,39,.3);padding-top:12px}
+.crisis .lines.open{display:block}
+.crisis .lines div{font-size:12px;color:var(--ice);font-weight:700;margin-bottom:8px}
+.crisis .lines div span{display:block;color:var(--muted);font-weight:600;font-size:11px}
+.composer{margin-top:10px;display:flex;gap:8px;align-items:center;border:1px solid #232a3a;background:var(--indigo);border-radius:999px;padding:6px 6px 6px 18px}
+.composer input{flex:1;background:none;border:none;color:var(--ice);font-size:13px;font-family:var(--sans);outline:none;padding:8px 0}
+.composer input::placeholder{color:var(--steel)}
+.composer button{background:var(--coral);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:15px;flex-shrink:0}
+
+/* rewards */
+.points-row{display:flex;align-items:center;justify-content:space-between;margin:10px 0 4px}
+.points{font-family:var(--serif);font-size:50px;color:var(--coral);line-height:1}
+.tier{border:1px solid var(--chrome);border-radius:999px;font-size:11px;font-weight:800;padding:7px 14px;color:var(--ice)}
+.pts-label{color:var(--muted);font-size:12px;margin-bottom:18px}
+.shelf{display:flex;gap:11px;margin-bottom:22px}
+.shelf i{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:15px}
+.b1{background:var(--body);box-shadow:0 0 18px rgba(57,255,158,.4)}
+.b2{background:var(--coral);box-shadow:0 0 18px rgba(255,75,75,.4)}
+.b3{background:var(--mind);box-shadow:0 0 18px rgba(0,212,255,.4)}
+.locked-badge{background:var(--steel);opacity:.45;color:#0a0c12}
+.reward{background:var(--indigo);border:1px solid #1e2433;border-radius:16px;padding:14px 16px;margin-bottom:11px}
+.reward .row{display:flex;justify-content:space-between;font-weight:800;font-size:14px}
+.reward .row em{font-style:normal;color:var(--coral)}
+.reward small{color:var(--muted);font-size:11.5px;display:block;margin-top:5px}
+.reward.locked{opacity:.6}
+.reward.locked .row em{color:var(--chrome)}
+.expiry{display:inline-block;border:1px solid var(--amber);color:var(--amber);border-radius:999px;font-size:10px;font-weight:800;padding:3px 9px;margin-top:9px}
+
+/* library */
+.searchbar{display:flex;align-items:center;gap:9px;border:1px solid #232a3a;background:var(--indigo);border-radius:14px;padding:12px 15px;color:var(--steel);font-size:13px;margin-bottom:14px}
+.foryou{border:1px solid rgba(255,75,75,.4);background:rgba(255,75,75,.03);border-radius:14px;padding:12px 14px;margin-bottom:16px}
+.foryou b{font-size:11px;letter-spacing:1px;color:var(--coral);text-transform:uppercase}
+.foryou p{color:var(--muted);font-size:12.5px;margin-top:5px;line-height:1.4}
+.libgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.libcard{aspect-ratio:1;border:1px solid #1e2433;background:var(--indigo);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:.15s;padding:6px;text-align:center}
+.libcard:hover{border-color:var(--steel)}
+.libcard i{font-style:normal;font-size:22px}
+.libcard span{font-size:10.5px;font-weight:700;color:var(--ice)}
+.libcard em{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:999px}
+.tier-strong{background:rgba(57,255,158,.14);color:var(--body)}
+.tier-mod{background:rgba(0,212,255,.14);color:var(--mind)}
+.tier-emerg{background:rgba(255,182,39,.14);color:var(--amber)}
+.legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;font-size:9px;font-weight:700;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend b{width:8px;height:8px;border-radius:2px;display:inline-block}
+
+/* coach */
+.insight{border:1px solid var(--coral);background:rgba(255,75,75,.05);border-radius:16px;padding:15px 16px;margin-bottom:16px}
+.insight b{font-size:14px;display:block;margin-bottom:5px}
+.insight p{color:var(--muted);font-size:12.5px;line-height:1.5}
+.coach-card{border:1px solid #1e2433;background:var(--indigo);border-radius:16px;padding:15px 16px;margin-bottom:11px}
+.coach-card .h{display:flex;justify-content:space-between;align-items:flex-start}
+.coach-card b{font-size:14.5px}
+.coach-card .flagtag{color:var(--muted);font-size:11.5px;margin-top:5px;line-height:1.4}
+.coach-card .flagtag em{font-style:normal;color:var(--body);font-weight:700}
+.phasechip{border:1px solid var(--steel);border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:.5px;padding:4px 9px;color:var(--ice);white-space:nowrap;flex-shrink:0;margin-left:10px}
+.coach-card.suppressed{opacity:.55}
+.coach-card.suppressed .flagtag{color:var(--amber)}
+
+/* journey */
+.seg-toggle{display:flex;gap:8px;margin:6px 0 18px}
+.seg-toggle button{flex:1;border:1px solid #1e2433;background:var(--indigo);color:var(--muted);border-radius:12px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.seg-toggle button.active{color:var(--ice)}
+.seg-toggle button.active.body{border-color:var(--body);box-shadow:0 0 0 1px var(--body)}
+.seg-toggle button.active.mind{border-color:var(--mind);box-shadow:0 0 0 1px var(--mind)}
+.trend{background:var(--indigo);border:1px solid #1e2433;border-radius:16px;padding:16px;margin-bottom:16px}
+.milestone{border:1px solid var(--body);border-radius:14px;padding:13px 15px;font-size:13px;font-weight:700;margin-bottom:16px;background:rgba(57,255,158,.04)}
+.milestone.mind{border-color:var(--mind);background:rgba(0,212,255,.04)}
+.streak-strip{display:flex;gap:7px;margin-top:10px}
+.cell{flex:1;aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#0a0c12}
+.cell.done{background:var(--body)}
+.cell.grace{background:var(--black);border:1.5px dashed var(--body);color:var(--body)}
+.cell.missed{background:#171c29}
+.streak-key{display:flex;gap:12px;margin-top:12px;font-size:9.5px;font-weight:700;color:var(--muted);flex-wrap:wrap}
+.streak-key span{display:inline-flex;align-items:center;gap:5px}
+.streak-key i{width:12px;height:12px;border-radius:3px;font-style:normal}
+
+/* notifications */
+.notif{border-radius:16px;padding:14px 16px;margin-bottom:11px;display:flex;gap:12px;align-items:flex-start}
+.notif .ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.notif b{font-size:13px;display:block}
+.notif p{color:var(--muted);font-size:12px;margin-top:3px;line-height:1.4}
+.notif.reminder{border:1px solid #1e2433;background:var(--indigo)}
+.notif.reminder .ic{background:#171c29;color:var(--muted)}
+.notif.celebrate{border:1px solid var(--body);background:rgba(57,255,158,.05)}
+.notif.celebrate .ic{background:rgba(57,255,158,.15);color:var(--body)}
+.notif.risk{border:1px solid var(--amber);background:rgba(255,182,39,.05)}
+.notif.risk .ic{background:rgba(255,182,39,.15);color:var(--amber)}
+.notif.queued{border:1px dashed var(--steel);background:none;opacity:.8}
+.notif.queued .ic{background:#171c29;color:var(--steel)}
+.lockclock{text-align:center;font-family:var(--serif);font-size:46px;margin:10px 0 4px;font-weight:500}
+.lockdate{text-align:center;color:var(--muted);font-size:12px;margin-bottom:24px}
+
+/* under18 block */
+.block-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px}
+.block-stage .ic{width:70px;height:70px;border-radius:50%;border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--amber)}
+
+/* bottom nav */
+.bottomnav{display:flex;border-top:1px solid #171c29;background:rgba(5,5,6,.9);backdrop-filter:blur(8px)}
+.bottomnav button{flex:1;background:none;border:none;color:var(--steel);padding:11px 2px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--sans)}
+.bottomnav button i{font-style:normal;font-size:17px}
+.bottomnav button span{font-size:8.5px;font-weight:800;letter-spacing:.3px}
+.bottomnav button.active{color:var(--coral)}
+
+.footer-note{color:#3a4150;font-size:11px;margin-top:20px;text-align:center;max-width:400px;line-height:1.7}
+.footer-note b{color:var(--muted);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="mock-header">
+  <div class="brand">Aumi Edge · Clickable Prototype</div>
+  <h1>Spandan</h1>
+  <p>Full end-to-end journey — 33 screens, real conditional branching, and a personalised payoff. Walk it start to finish.</p>
+</div>
+
+<div class="toolbar">
+  <button id="restart">↻ Restart journey</button>
+  <button id="autofill">⚡ Auto-fill onboarding</button>
+  <div class="jump">
+    <button id="jumpBtn">⤳ Jump to screen ▾</button>
+    <div class="jump-menu" id="jumpMenu"></div>
+  </div>
+</div>
+
+<div class="phone">
+  <canvas class="particles" id="pcanvas"></canvas>
+  <div class="viewport">
+    <div class="statusbar"><span>9:41</span><span class="dots">●●●</span></div>
+    <!-- onboarding flow renders here -->
+    <div class="content" id="stage"></div>
+    <!-- main app renders here (hidden until onboarding done) -->
+    <div class="content" id="appstage" style="display:none"></div>
+    <div class="bottomnav" id="bottomnav" style="display:none"></div>
+  </div>
+</div>
+
+<p class="footer-note">
+  <b>Try:</b> answer <b>Sedentary</b> activity to unlock Movement Preference · set sleep under 6h <b>or</b> high stress to unlock Tea/Coffee · pick <b>Female/Male</b> to branch the Health screen · your Wellness Snapshot &amp; ranked goal are computed from your answers · in Ayu, type something like <b>"I feel hopeless"</b> to trigger the crisis card.
+</p>
+
+<script>
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  consent:{health:false, ayu:false, comms:false},
+  name:'', email:'', age:null, gender:'', whatsapp:'',
+  sleep:6.5, activity:'', movement:'', stress:'', habits:[],
+  diet:'', smoking:'', alcohol:'', alcoholQty:'', alcoholBinge:'',
+  outsideMeals:'', teacoffee:'',
+  baseline:{Mental:3, Physical:3, Social:3, Spiritual:3, Clarity:3},
+  womensPcos:'', periods:'', mensVitality:'', mensSexual:'',
+  wearablePaired:false,
+  goal:'', feelings:[], commitment:''
+};
+
+/* ---------- derived flags ---------- */
+const STRESS_LEVELS = ['Low','Moderate','High','Very high'];
+function stressIdx(){ return STRESS_LEVELS.indexOf(state.stress)+1; } // 1..4, 0 if unset
+const flags = {
+  lowSleep:  () => state.sleep < 6,
+  highStress:() => stressIdx() >= 3,
+  caffeineSleep: () => state.sleep < 5 && (state.teacoffee==='3–4' || state.teacoffee==='5+'),
+  heavySmoker: () => state.smoking==='Heavy smoker',
+  heavyDrink: () => state.alcohol==='3+×/week',
+  sedentary: () => state.activity==='Sedentary',
+  outsideMealsHigh: () => state.outsideMeals==='Regularly (3–4×/week)' || state.outsideMeals==='Frequently (5+×/week)'
+};
+function wq(){
+  const v = Object.values(state.baseline);
+  return Math.round((v.reduce((a,b)=>a+b,0)/v.length)*20);
+}
+function wqBand(n){
+  if(n>=70) return {t:'Thriving', c:'var(--body)'};
+  if(n>=40) return {t:'Steady, room to grow', c:'var(--amber)'};
+  return {t:'Needs attention', c:'var(--coral)'};
+}
+function firstName(){ return state.name.trim() ? state.name.trim() : 'there'; }
+
+/* goal ranking — re-sorts the fixed goal set by the user's flags */
+const GOAL_SET = ['Sleep Quality','Energy & Vitality','Stress & Calm','Weight','Heart Health'];
+function rankedGoals(){
+  const score = {
+    'Sleep Quality': (flags.lowSleep()?2:0) + (flags.highStress()?1:0) + (flags.caffeineSleep()?1:0),
+    'Energy & Vitality': (flags.sedentary()?2:0) + (state.sleep<7?1:0),
+    'Stress & Calm': (flags.highStress()?2:0),
+    'Weight': (flags.outsideMealsHigh()?2:0) + (flags.sedentary()?1:0),
+    'Heart Health': (flags.heavySmoker()?2:0) + (flags.heavyDrink()?1:0)
+  };
+  return [...GOAL_SET].sort((a,b)=> (score[b]-score[a]) || (GOAL_SET.indexOf(a)-GOAL_SET.indexOf(b)));
+}
+function recommendedGoal(){ return rankedGoals()[0]; }
+
+/* snapshot flags list */
+function snapshotFlags(){
+  const out=[];
+  if(flags.lowSleep()) out.push({t:`Low sleep (${state.sleep}h)`, good:false});
+  else out.push({t:`Sleep looks steady (${state.sleep}h)`, good:true});
+  if(flags.caffeineSleep()) out.push({t:'Caffeine–sleep interference', good:false});
+  if(flags.highStress()) out.push({t:'Elevated stress lately', good:false});
+  if(state.activity) out.push({t:`${state.activity} activity level`, good:state.activity==='Moderate'||state.activity==='Active'});
+  if(flags.heavySmoker()) out.push({t:'Smoking flagged for Week 1', good:false});
+  if(flags.outsideMealsHigh()) out.push({t:'Outside-meal management', good:false});
+  return out.slice(0,5);
+}
+
+/* ============================================================
+   REUSABLE RENDER HELPERS
+   ============================================================ */
+function progressBar(){
+  const list = FLOW.filter(s => (!s.cond || s.cond()) && s.progress!==false);
+  const pos = list.indexOf(FLOW[flowIndex]);
+  const total = list.length;
+  let segs='';
+  for(let i=0;i<total;i++) segs += `<span class="${i<=pos?'done':''}"></span>`;
+  return `<div class="progress">${segs}</div>`;
+}
+function topbar(phaseName){
+  const showBack = firstEligibleFrom(flowIndex-1,-1) !== -1 || (FLOW[flowIndex].id==='baseline' && baselineIdx>0);
+  return `<div class="topbar">
+    ${showBack?'<button class="back" data-act="back" aria-label="Back">‹</button>':'<span style="width:26px"></span>'}
+    <span class="phaselabel">${phaseName||''}</span>
+  </div>${FLOW[flowIndex].progress!==false?progressBar():''}`;
+}
+const norm = o => typeof o==='string' ? {value:o,label:o} : o;
+function optList(field, options, emerald){
+  return options.map(norm).map(o=>{
+    const sel = state[field]===o.value ? 'selected':'';
+    return `<button class="opt ${emerald?'emerald':''} ${sel}" data-field="${field}" data-value="${o.value}">
+      <span>${o.label}${o.sub?`<small>${o.sub}</small>`:''}</span>
+      ${o.badge?`<span class="badge">${o.badge}</span>`:`<span class="tick">✓</span>`}
+    </button>`;
+  }).join('');
+}
+function chipGrid(field, options){
+  return `<div class="chipgrid">`+options.map(norm).map(o=>{
+    const sel = state[field].includes(o.value)?'selected':'';
+    return `<button class="chip ${sel}" data-chip="${field}" data-value="${o.value}">${o.label}</button>`;
+  }).join('')+`</div>`;
+}
+function ctaFooter(label, opts={}){
+  return `<div class="spacer"></div>
+    <button class="cta" data-act="next" ${opts.disabled?'disabled':''}>${label||'Next'}</button>
+    ${opts.skip?`<button class="skip" data-act="skip">${opts.skip}</button>`:''}
+    ${opts.ghost?`<button class="cta ghost" data-act="next">${opts.ghost}</button>`:''}`;
+}
+
+/* ============================================================
+   FLOW DEFINITION  (26 onboarding steps)
+   ============================================================ */
+const FLOW = [
+  /* 1 */ { id:'welcome', progress:false, particle:1, render(){
+    return `<div class="logo-rings"><i></i><i></i></div>
+      <div class="wordmark">Spandan</div>
+      <div class="tagline">Your mind–body rhythm</div>
+      <div class="value">Step into the best version of&nbsp;you with us</div>
+      <div class="spacer"></div>
+      <button class="cta" data-act="next">Get started</button>
+      <button class="cta ghost" data-act="next">I already have an account</button>`;
+  }},
+
+  /* 2 */ { id:'consent', phase:'Phase 1 · Identity', particle:.4, valid:()=>state.consent.health, render(){
+    const row=(k,title,sub,req)=>`<div class="toggle-row ${state.consent[k]?'on':''}" data-toggle="${k}">
+      <div><b>${title}</b><small>${sub}</small></div>
+      <div style="display:flex;align-items:center;gap:8px">${req?'<span class="req">Required</span>':''}<div class="switch"></div></div></div>`;
+    return topbar('Phase 1 · Identity')+
+      `<h2 class="title">Before we begin</h2>
+       <p class="sub">We only ask for what each feature needs — and you can change your mind anytime.</p>
+       ${row('health','Health & routine data','Powers your scores, plan and dashboard',true)}
+       ${row('ayu','Ayu conversations','Lets Ayu remember context between chats',false)}
+       ${row('comms','Communications','Tips &amp; reminders — never spam',false)}
+       <span class="linkrow" data-act="noop">Read the full privacy notice</span>`+
+      ctaFooter('Continue',{disabled:!state.consent.health});
+  }},
+
+  /* 3 */ { id:'name', phase:'Phase 1 · Identity', particle:.3, render(){
+    return topbar('Phase 1 · Identity')+
+      `<h2 class="title">What should we call you?</h2>
+       <p class="sub">Optional — it just helps us keep things personal.</p>
+       <input class="tf" data-field="name" placeholder="First name" value="${state.name}" autofocus>`+
+      ctaFooter('Next',{skip:'Skip for now'});
+  }},
+
+  /* 4 */ { id:'email', phase:'Phase 1 · Identity', particle:.3,
+    valid:()=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email), render(){
+    return topbar('Phase 1 · Identity')+
+      `<h2 class="title">What's your email?</h2>
+       <p class="sub">So we can save your plan and let you pick up where you left off.</p>
+       <input class="tf" type="email" data-field="email" placeholder="you@email.com" value="${state.email}">
+       <span class="field-err" id="emailErr">That doesn't look like a full email — mind checking it?</span>`+
+      ctaFooter('Next',{disabled:!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)});
+  }},
+
+  /* 5 */ { id:'agegender', phase:'Phase 1 · Identity', particle:.3,
+    valid:()=>state.age!=null && state.age>=18 && state.gender, render(){
+    const g=(v)=>`<button class="seg-opt ${state.gender===v?'selected':''}" data-seg="gender" data-value="${v}">${v}</button>`;
+    return topbar('Phase 1 · Identity')+
+      `<h2 class="title">How old are you?</h2>
+       <input class="tf" type="number" inputmode="numeric" data-field="age" placeholder="32" value="${state.age??''}" style="margin-bottom:6px">
+       <span class="field-err" id="ageErr">Spandan is 18+ — you'll be able to join when you're older.</span>
+       <div class="label-mini">Gender</div>
+       <div class="seg">${g('Female')}${g('Male')}${g('Other')}</div>`+
+      ctaFooter('Next',{disabled:!(state.age!=null && state.age>=18 && state.gender)});
+  }},
+
+  /* 6 */ { id:'whatsapp', phase:'Phase 1 · Identity', particle:.3,
+    valid:()=>/^\d{10}$/.test(state.whatsapp), render(){
+    return topbar('Phase 1 · Identity')+
+      `<h2 class="title">Want reminders on WhatsApp?</h2>
+       <p class="sub">Helpful check-ins, without the noise.</p>
+       <div class="prefix-field"><span>+91</span><input inputmode="numeric" data-field="whatsapp" placeholder="phone number" value="${state.whatsapp}" maxlength="10"></div>`+
+      ctaFooter('Next',{skip:'Maybe later', disabled:!/^\d{10}$/.test(state.whatsapp)});
+  }},
+
+  /* 7 */ { id:'sleep', phase:'Phase 2 · Routine', particle:.35, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">How many hours do you usually sleep?</h2>
+       <div class="slider-wrap">
+         <div class="bubble"><span id="sleepVal">${state.sleep}</span><small>hrs</small></div>
+         <input type="range" min="3" max="12" step="0.5" value="${state.sleep}" data-range="sleep" aria-label="Sleep hours">
+         <div class="range-labels"><span>3h</span><span>12h</span></div>
+       </div>
+       <div class="hint">Sound sleep shapes your energy, mood, digestion, immunity, and metabolic health.</div>`+
+      ctaFooter('Next');
+  }},
+
+  /* 8 */ { id:'activity', phase:'Phase 2 · Routine', particle:.35, valid:()=>state.activity, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">How active is your day, most days?</h2>
+       ${optList('activity',[
+         {value:'Sedentary',sub:'Mostly sitting'},
+         {value:'Light',sub:'Some walking'},
+         {value:'Moderate',sub:'On my feet often'},
+         {value:'Active',sub:'Physically demanding'}
+       ],true)}`+
+      ctaFooter('Next',{disabled:!state.activity});
+  }},
+
+  /* 9 */ { id:'movement', phase:'Phase 2 · Routine', particle:.35,
+    cond:()=>flags.sedentary(), valid:()=>state.movement, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">What kind of movement feels doable right now?</h2>
+       ${optList('movement',['Walking','Home workouts','Gym','Yoga','Not sure yet'],true)}
+       <div class="hint">Simple routine movement goes a long way in building energy, strength, mobility, and momentum.</div>`+
+      ctaFooter('Next',{disabled:!state.movement});
+  }},
+
+  /* 10 */ { id:'stress', phase:'Phase 2 · Routine', particle:.35, valid:()=>state.stress, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">How's your stress been lately?</h2>
+       ${optList('stress',[
+         {value:'Low',label:'Low — manageable'},
+         {value:'Moderate',label:'Moderate — some days'},
+         {value:'High',label:'High — most days'},
+         {value:'Very high',label:'Very high — constant'}
+       ])}
+       <div class="hint">No judgment here — just understanding your full picture.</div>`+
+      ctaFooter('Next',{disabled:!state.stress});
+  }},
+
+  /* 11 */ { id:'habits', phase:'Phase 2 · Routine', particle:.35, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">Any habits been part of your routine in the past?</h2>
+       <p class="sub">Let's build from there!</p>
+       ${chipGrid('habits',['Meditation','Gym','Walking','Yoga','Journaling','None yet'])}`+
+      ctaFooter('Next');
+  }},
+
+  /* 12 */ { id:'diet', phase:'Phase 2 · Routine', particle:.35, valid:()=>state.diet, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">What best describes your diet?</h2>
+       ${optList('diet',['Vegetarian','Non-vegetarian','Vegan','Eggetarian','Varies'],true)}`+
+      ctaFooter('Next',{disabled:!state.diet});
+  }},
+
+  /* 13 */ { id:'smoking', phase:'Phase 2 · Routine', particle:.35, valid:()=>state.smoking, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">Do you currently smoke?</h2>
+       ${optList('smoking',['Never','Ex-smoker','Light smoker','Heavy smoker','Prefer not to say'])}
+       <div class="hint">This helps us understand heart-health context — no lectures, promise.</div>`+
+      ctaFooter('Next',{disabled:!state.smoking});
+  }},
+
+  /* 14 */ { id:'alcohol', phase:'Phase 2 · Routine', particle:.35, valid:()=>state.alcohol, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">How often do you have an alcoholic drink?</h2>
+       ${optList('alcohol',['Never','< 1×/month','1–3×/month','1–2×/week','3+×/week','Prefer not to say'])}`+
+      ctaFooter('Next',{disabled:!state.alcohol});
+  }},
+
+  /* 15 */ { id:'alcoholdetail', phase:'Phase 2 · Routine', particle:.35,
+    cond:()=>state.alcohol==='1–2×/week' || state.alcohol==='3+×/week',
+    valid:()=>state.alcoholQty && state.alcoholBinge, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">A little more detail</h2>
+       <div class="label-mini">Drinks on a drinking occasion</div>
+       <div class="chipgrid">${['1–2','3–4','5–6','7–9','10+'].map(v=>`<button class="chip ${state.alcoholQty===v?'selected':''}" data-single="alcoholQty" data-value="${v}">${v}</button>`).join('')}</div>
+       <div class="label-mini">How often 6+ drinks on one occasion?</div>
+       ${optList('alcoholBinge',['Never','Monthly','Weekly','Daily'])}`+
+      ctaFooter('Next',{disabled:!(state.alcoholQty && state.alcoholBinge)});
+  }},
+
+  /* 16 */ { id:'outsidemeals', phase:'Phase 2 · Routine', particle:.35, valid:()=>state.outsideMeals, render(){
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">How often do you eat meals prepared outside home?</h2>
+       <p class="sub">Restaurants, takeout, delivery, dhabas, street food.</p>
+       ${optList('outsideMeals',[
+         'Rarely (< 1×/week)','Sometimes (1–2×/week)','Regularly (3–4×/week)','Frequently (5+×/week)'
+       ])}`+
+      ctaFooter('Next',{disabled:!state.outsideMeals});
+  }},
+
+  /* 17 */ { id:'teacoffee', phase:'Phase 2 · Routine', particle:.35,
+    cond:()=>flags.lowSleep() || flags.highStress(),
+    valid:()=>state.teacoffee, render(){
+    const reason = flags.lowSleep() && flags.highStress() ? 'your low sleep and high stress'
+                 : flags.lowSleep() ? 'your low sleep' : 'your high stress';
+    return topbar('Phase 2 · Routine')+
+      `<h2 class="title">How many cups of tea or coffee do you typically have?</h2>
+       <div class="chipgrid">${['0','1–2','3–4','5+'].map(v=>`<button class="chip ${state.teacoffee===v?'selected':''}" data-single="teacoffee" data-value="${v}">${v}</button>`).join('')}</div>
+       <div class="hint">We're asking because of ${reason} — caffeine timing can quietly work against both.</div>`+
+      ctaFooter('Next',{disabled:!state.teacoffee});
+  }},
+
+  /* 18 */ { id:'baseline', phase:'Phase 3 · Wellness', particle:.4, render(){
+    const dims=[
+      {k:'Mental', q:'How settled does your mind feel?', lo:'Overwhelmed', hi:'Calm and steady'},
+      {k:'Physical', q:'How is your physical energy?', lo:'Drained', hi:'Energised'},
+      {k:'Social', q:'How connected do you feel to others?', lo:'Isolated', hi:'Well connected'},
+      {k:'Spiritual', q:'How much sense of purpose do you feel?', lo:'Adrift', hi:'Grounded'},
+      {k:'Clarity', q:'How clear is your thinking?', lo:'Foggy', hi:'Sharp'}
+    ];
+    const d=dims[baselineIdx];
+    const anchors=['Very low','Low','Neutral','Good','Very good'];
+    return topbar('Phase 3 · Wellness')+
+      `<h2 class="title">${d.q}</h2>
+       <div class="bubble" style="margin-top:14px">${anchors[state.baseline[d.k]-1]}</div>
+       <input type="range" min="1" max="5" step="1" value="${state.baseline[d.k]}" data-baseline="${d.k}" aria-label="${d.k}">
+       <div class="range-labels"><span>${d.lo}</span><span>${d.hi}</span></div>
+       <div class="label-mini">${baselineIdx+1} of 5 · ${d.k}</div>`+
+      `<div class="spacer"></div>
+       <button class="cta" data-act="next">${baselineIdx<4?'Next':'See where I land'}</button>
+       <button class="skip" data-act="skip">Skip for now</button>`;
+  }},
+
+  /* 19 */ { id:'health', phase:'Phase 3 · Wellness', particle:.4,
+    cond:()=>state.gender==='Female' || state.gender==='Male',
+    valid:()=> state.gender==='Female' ? (state.womensPcos && state.periods) : (state.mensVitality && state.mensSexual),
+    render(){
+    if(state.gender==='Female'){
+      return topbar('Phase 3 · Wellness')+
+        `<h2 class="title">A bit about your health</h2>
+         <div class="label-mini">Have you been diagnosed with PCOS/PCOD?</div>
+         <div class="seg">${['Yes','No','Not sure'].map(v=>`<button class="seg-opt ${state.womensPcos===v?'selected':''}" data-seg="womensPcos" data-value="${v}">${v}</button>`).join('')}</div>
+         <div class="label-mini">How would you describe your periods?</div>
+         ${optList('periods',['Regular','Irregular','Peri / post-menopause'])}`+
+        ctaFooter('Next',{disabled:!(state.womensPcos && state.periods)});
+    }
+    return topbar('Phase 3 · Wellness')+
+      `<h2 class="title">A bit about your health</h2>
+       <div class="label-mini">How's your energy &amp; vitality?</div>
+       ${optList('mensVitality',['Steady','Some decline','Notable decline'])}
+       <div class="label-mini">Any concerns with sexual health?</div>
+       <div class="seg">${['None','Some','Prefer not to say'].map(v=>`<button class="seg-opt ${state.mensSexual===v?'selected':''}" data-seg="mensSexual" data-value="${v}">${v}</button>`).join('')}</div>`+
+      ctaFooter('Next',{disabled:!(state.mensVitality && state.mensSexual)});
+  }},
+
+  /* 20 */ { id:'wearable', phase:'Phase 3 · Wellness', particle:.4, render(){
+    return topbar('Phase 3 · Wellness')+
+      `<h2 class="title">Let your watch do some of this for you</h2>
+       <div class="action" data-act="pair" style="margin-top:24px;flex-direction:column;align-items:flex-start;gap:14px;padding:22px;border-color:${state.wearablePaired?'var(--body)':'rgba(0,212,255,.35)'}">
+         <div style="display:flex;align-items:center;gap:14px;width:100%">
+           <div class="play" style="${state.wearablePaired?'border-color:var(--body);color:var(--body)':''}">${state.wearablePaired?'✓':'⌚'}</div>
+           <div><b>${state.wearablePaired?'Device paired':'Connect your watch'}</b><span>Apple Health, Google Fit &amp; common wearables</span></div>
+         </div>
+       </div>`+
+      `<div class="spacer"></div>
+       <button class="cta" data-act="next">Next</button>
+       <button class="skip" data-act="skip">Skip</button>`;
+  }},
+
+  /* 21 */ { id:'breathing', phase:'Phase 4 · Reset', progress:false, particle:1, render(){
+    return `<div class="breathe-stage">
+        <h2 class="title" style="text-align:center">Let's pause for a moment</h2>
+        <div class="circle" id="breatheCircle" aria-hidden="true"></div>
+        <div class="breathe-label" id="breatheLabel">Breathe in · 4s</div>
+        <div class="round" id="breatheRound">Round 1 of 3</div>
+      </div>
+      <button class="cta" data-act="next" id="breatheContinue">Continue</button>
+      <button class="skip" data-act="skip">Skip</button>`;
+  }},
+
+  /* 22 */ { id:'snapshot', phase:'Phase 5 · Goals', particle:.5, render(){
+    const n=wq(), band=wqBand(n);
+    const fl = snapshotFlags().map(f=>`<div class="flag ${f.good?'good':''}"><i></i>${f.t}</div>`).join('');
+    return topbar('Phase 5 · Goals')+
+      `<h2 class="title">Here's what we're seeing${state.name?`, ${firstName()}`:''}</h2>
+       <div class="wq-card">
+         <div style="font-size:10px;font-weight:800;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase">Wellness Quotient</div>
+         <div class="n">${n}</div>
+         <div class="band" style="color:${band.c}">${band.t}</div>
+       </div>
+       ${fl}`+
+      ctaFooter('Continue');
+  }},
+
+  /* 23 */ { id:'goal', phase:'Phase 5 · Goals', particle:.5, valid:()=>state.goal, render(){
+    const rec=recommendedGoal();
+    if(!state.goal) state.goal=rec;
+    const opts = rankedGoals().map(g => ({value:g, label:g, badge: g===rec ? 'Recommended':undefined}));
+    return topbar('Phase 5 · Goals')+
+      `<h2 class="title">What matters most right now?</h2>
+       <p class="sub">Ranked for you, from everything you've shared.</p>
+       ${optList('goal',opts)}`+
+      ctaFooter('Next',{disabled:!state.goal});
+  }},
+
+  /* 24 */ { id:'feelings', phase:'Phase 5 · Goals', particle:.5, render(){
+    return topbar('Phase 5 · Goals')+
+      `<h2 class="title">How do you want to feel?</h2>
+       <p class="sub">Pick as many as you like.</p>
+       ${chipGrid('feelings',['Energized','Calm','Focused','Strong','Confident','Rested','Clear','Motivated'])}`+
+      ctaFooter('Next');
+  }},
+
+  /* 25 */ { id:'commitment', phase:'Phase 5 · Goals', particle:.5, valid:()=>state.commitment, render(){
+    return topbar('Phase 5 · Goals')+
+      `<h2 class="title">How much are you ready to commit?</h2>
+       ${optList('commitment',[
+         {value:'Exploring',label:'Exploring',sub:'2–3 gentle actions · low daily time'},
+         {value:'Some changes',label:'Some changes',sub:'3–5 realistic actions · moderate time'},
+         {value:'Fully committed',label:'Fully committed',sub:'5–7 structured actions · daily schedule'}
+       ])}`+
+      ctaFooter('Next',{disabled:!state.commitment});
+  }},
+
+  /* 26 */ { id:'plan', phase:'Phase 5 · Goals', particle:.5, render(){
+    const count = state.commitment==='Fully committed'?7 : state.commitment==='Some changes'?5 : 3;
+    const items=[
+      {tier:'FOUNDATIONAL', cls:'mind', text:'10-min gamma routine, nightly'},
+      {tier:'FOUNDATIONAL', cls:'mind', text:'Sleep wind-down reminder at 10pm'},
+      {tier:'PRIMARY GOAL', cls:'coral', text:`Focused plan for ${state.goal||recommendedGoal()}`},
+      {tier:'PRIMARY GOAL', cls:'coral', text:'One daily check-in with Ayu'},
+      {tier:'SUPPORT', cls:'', text:'3 Indian-cuisine dinner swaps'},
+      {tier:'SUPPORT', cls:'', text: flags.sedentary()? `${state.movement||'Walking'} — 15 min, 3×/week` : 'Movement snack after lunch'},
+      {tier:'OPTIMIZATION', cls:'', text:'Vitamin D check suggested'}
+    ].slice(0,count);
+    let html='', lastTier='';
+    items.forEach(it=>{
+      if(it.tier!==lastTier){ html+=`<div class="plan-tier"><div class="t">${it.tier}</div>`; lastTier=it.tier; }
+      html+=`<div class="plan-item ${it.cls}"><i></i>${it.text}</div>`;
+    });
+    html+='</div>';
+    return topbar('Phase 5 · Goals')+
+      `<h2 class="title">Your Week 1 plan</h2>
+       <p class="sub">${count} actions, matched to your “${state.commitment||'Some changes'}” commitment.</p>
+       ${html}`+
+      `<div class="spacer"></div><button class="cta" data-act="finish">Save &amp; Continue</button>`;
+  }}
+];
+
+/* ============================================================
+   FLOW ENGINE
+   ============================================================ */
+let flowIndex = 0;
+let baselineIdx = 0;
+const stage = document.getElementById('stage');
+const appstage = document.getElementById('appstage');
+const bottomnav = document.getElementById('bottomnav');
+
+function firstEligibleFrom(i, dir){
+  while(i>=0 && i<FLOW.length){
+    if(!FLOW[i].cond || FLOW[i].cond()) return i;
+    i+=dir;
+  }
+  return -1;
+}
+function renderStep(){
+  const step = FLOW[flowIndex];
+  stage.innerHTML = step.render();
+  setParticles(step.particle ?? .3);
+  const f = stage.querySelector('[autofocus]'); if(f) f.focus();
+  if(step.id==='breathing') startBreathing();
+}
+function goNext(){
+  const step = FLOW[flowIndex];
+  if(step.valid && !step.valid()) return;
+  if(step.id==='agegender' && state.age!=null && state.age<18){ renderBlock(); return; }
+  if(step.id==='baseline' && baselineIdx<4){ baselineIdx++; renderStep(); return; }
+  stopBreathing();
+  const ni = firstEligibleFrom(flowIndex+1, 1);
+  if(ni===-1){ finishOnboarding(); return; }
+  flowIndex = ni; baselineIdx = 0; renderStep();
+}
+function goBack(){
+  const step = FLOW[flowIndex];
+  if(step.id==='baseline' && baselineIdx>0){ baselineIdx--; renderStep(); return; }
+  stopBreathing();
+  const pi = firstEligibleFrom(flowIndex-1, -1);
+  if(pi===-1) return;
+  flowIndex = pi; baselineIdx = (FLOW[pi].id==='baseline')?4:0; renderStep();
+}
+function renderBlock(){
+  setParticles(.2);
+  stage.innerHTML = `<div class="topbar"><button class="back" data-act="back">‹</button></div>
+    <div class="block-stage">
+      <div class="ic">18+</div>
+      <h2 class="title" style="text-align:center">Spandan is 18+</h2>
+      <p class="sub" style="text-align:center">We can't continue onboarding just yet — you'll be welcome when you're older. Thanks for stopping by.</p>
+    </div>`;
+}
+
+/* ---------- breathing controller ---------- */
+let breatheTimer=null, breatheRAF=null;
+function startBreathing(){
+  const circle=document.getElementById('breatheCircle');
+  const label=document.getElementById('breatheLabel');
+  const roundEl=document.getElementById('breatheRound');
+  if(!circle) return;
+  const phases=[['Breathe in · 4s',4000,'in'],['Hold · 4s',4000,'hold'],['Breathe out · 4s',4000,'out']];
+  let pi=0, round=1, start=performance.now(), phaseStart=performance.now();
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function frame(now){
+    const [txt,dur,kind]=phases[pi];
+    const t=Math.min((now-phaseStart)/dur,1);
+    if(!reduce){
+      let scale=0.62;
+      if(kind==='in') scale=0.62+0.38*t;
+      else if(kind==='hold') scale=1;
+      else scale=1-0.38*t;
+      circle.style.transform=`scale(${scale})`;
+    }
+    breatheRAF=requestAnimationFrame(frame);
+  }
+  function step(){
+    const [txt,dur]=phases[pi];
+    if(label) label.textContent=txt;
+    phaseStart=performance.now();
+    breatheTimer=setTimeout(()=>{
+      pi=(pi+1)%3;
+      if(pi===0){ round++; if(round>3){ if(roundEl) roundEl.textContent='Complete — nicely done'; return; } if(roundEl) roundEl.textContent=`Round ${round} of 3`; }
+      step();
+    },dur);
+  }
+  step(); breatheRAF=requestAnimationFrame(frame);
+}
+function stopBreathing(){ clearTimeout(breatheTimer); cancelAnimationFrame(breatheRAF); }
+
+/* ============================================================
+   MAIN APP
+   ============================================================ */
+let habitDone=false, journeyView='body';
+function finishOnboarding(){
+  stopBreathing();
+  stage.style.display='none';
+  appstage.style.display='flex';
+  bottomnav.style.display='flex';
+  renderNav();
+  showApp('dashboard');
+}
+const NAV=[
+  {id:'dashboard', icon:'◎', label:'Home'},
+  {id:'journey', icon:'📈', label:'Journey'},
+  {id:'coach', icon:'🧭', label:'Coach'},
+  {id:'ayu', icon:'✦', label:'Ayu'},
+  {id:'library', icon:'📚', label:'Library'},
+  {id:'rewards', icon:'🎁', label:'Rewards'}
+];
+let currentApp='dashboard';
+function renderNav(){
+  bottomnav.innerHTML = NAV.map(n=>`<button data-nav="${n.id}" class="${n.id===currentApp?'active':''}"><i>${n.icon}</i><span>${n.label}</span></button>`).join('');
+}
+function showApp(id){
+  currentApp=id;
+  appstage.innerHTML = APP[id]();
+  setParticles(id==='dashboard'?.3:.22);
+  renderNav();
+  if(id==='ayu'){ const s=appstage.querySelector('.chat-scroll'); if(s) s.scrollTop=s.scrollHeight; }
+}
+function appbar(title, bell=true){
+  return `<div class="appbar"><span class="ttl">${title}</span>
+    ${bell?`<button class="bell" data-nav="notifications" aria-label="Notifications">🔔<span class="dot"></span></button>`:''}</div>`;
+}
+
+const APP = {
+  dashboard(){
+    const off=(v)=>Math.round(326-(326*v/100));
+    return appbar('')+
+      `<div class="greet">Good morning, ${firstName()}</div>
+       <div class="rings">
+         <div class="ring"><svg width="126" height="126"><circle class="track" cx="63" cy="63" r="52"/><circle class="fill" cx="63" cy="63" r="52" stroke="#39FF9E" stroke-dashoffset="${off(72)}"/></svg>
+           <div class="num" data-nav="journey"><b>72</b><span>METABOLIC</span></div></div>
+         <div class="ring"><svg width="126" height="126"><circle class="track" cx="63" cy="63" r="52"/><circle class="fill" cx="63" cy="63" r="52" stroke="#00D4FF" stroke-dashoffset="${off(68)}"/></svg>
+           <div class="num" data-nav="journey"><b>68</b><span>CLARITY</span></div></div>
+       </div>
+       <div class="action ${habitDone?'done':''}" data-act="habit">
+         <div class="play">${habitDone?'✓':'▶'}</div>
+         <div><b>${habitDone?'Gamma routine — done today':'Daily gamma routine'}</b><span>40 Hz · 10 min · resets focus</span></div>
+       </div>
+       <div class="chips">
+         <span class="pill amber">Visceral fat · Watch</span>
+         <span class="pill">HRV 58ms</span>
+         <span class="pill">Cortisol · Balanced</span>
+       </div>
+       <div class="ladder"><label>BODY LADDER · STAGE 2 BUILD</label><div class="bar"><i style="width:55%;background:var(--body)"></i></div></div>
+       <div class="ladder"><label>MIND LADDER · STAGE 1 SETTLE</label><div class="bar"><i style="width:30%;background:var(--mind)"></i></div></div>
+       <div class="nudge" data-nav="coach">Add lab values to complete your Metabolic picture →</div>`;
+  },
+
+  journey(){
+    const body = journeyView==='body';
+    const line = body
+      ? '<polyline points="10,80 50,72 90,66 130,58 170,50 210,46 250,38" stroke="#39FF9E" stroke-width="2.5" fill="none" stroke-linecap="round"/>'
+      : '<polyline points="10,74 50,70 90,60 130,64 170,52 210,48 250,42" stroke="#00D4FF" stroke-width="2.5" fill="none" stroke-linecap="round"/>';
+    const dots = (body?'#39FF9E':'#00D4FF');
+    const pts = body?[[10,80],[50,72],[90,66],[130,58],[170,50],[210,46],[250,38]]:[[10,74],[50,70],[90,60],[130,64],[170,52],[210,48],[250,42]];
+    const circles = pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${dots}"/>`).join('');
+    const cells=['done','done','grace','done','done','missed','done']
+      .map(c=>`<div class="cell ${c}">${c==='grace'?'◇':c==='done'?'✓':''}</div>`).join('');
+    return appbar('My Journey')+
+      `<div class="seg-toggle">
+        <button class="body ${body?'active':''}" data-jview="body">Body</button>
+        <button class="mind ${!body?'active':''}" data-jview="mind">Mind</button>
+      </div>
+      <div class="trend"><svg viewBox="0 0 260 100" width="100%" height="110">
+        <line x1="10" y1="90" x2="250" y2="90" stroke="#1a1f2c"/>${line}${circles}</svg></div>
+      <div class="milestone ${body?'':'mind'}">${body?'⬆ Physical energy improved by 2 points':'⬆ Mental clarity improved by 3 points'}</div>
+      <div class="label-mini">Streak — last 7 days</div>
+      <div class="streak-strip">${cells}</div>
+      <div class="streak-key">
+        <span><i style="background:var(--body)"></i>Completed</span>
+        <span><i style="background:var(--black);border:1.5px dashed var(--body)"></i>Grace-covered</span>
+        <span><i style="background:#171c29"></i>Missed</span>
+      </div>`;
+  },
+
+  coach(){
+    return appbar('Coach Connect')+
+      `<div class="insight">
+        <b>We noticed a connection</b>
+        <p>Poor sleep + high stress + one flagged marker — here's how they link, and where to start.</p>
+      </div>
+      <div class="coach-card">
+        <div class="h"><b>Diet &amp; Nutrition</b><span class="phasechip">Week 1</span></div>
+        <div class="flagtag">Addressing your flagged: <em>Blood Sugar</em></div>
+      </div>
+      <div class="coach-card">
+        <div class="h"><b>Stress Management</b><span class="phasechip">Week 1</span></div>
+        <div class="flagtag">Addressing your flagged: <em>Clarity, Heart</em></div>
+      </div>
+      <div class="coach-card">
+        <div class="h"><b>Sleep Restoration</b><span class="phasechip">Weeks 2–4</span></div>
+        <div class="flagtag">Addressing your flagged: <em>${flags.lowSleep()?'Low sleep':'Recovery'}</em></div>
+      </div>
+      <div class="coach-card suppressed">
+        <div class="h"><b>Advanced supplementation</b><span class="phasechip">Month 2+</span></div>
+        <div class="flagtag">Held back — we'll revisit once your baseline is stable.</div>
+      </div>`;
+  },
+
+  library(){
+    const cards=[
+      ['🌿','Natural','tier-strong','Strong'],['🍲','Food','tier-strong','Strong'],['🥗','Diet Patterns','tier-mod','Moderate'],
+      ['🕉️','Ayurveda','tier-mod','Moderate'],['🧘','Yoga','tier-strong','Strong'],['✨','Mind &amp; Spirit','tier-emerg','Emerging'],
+      ['♻️','Regenerative','tier-emerg','Emerging'],['🎯','Precision','tier-mod','Moderate'],['⏳','Longevity','tier-emerg','Emerging']
+    ];
+    return appbar('Wellness Library')+
+      `<div class="searchbar">🔍 Search the library</div>
+       <div class="foryou"><b>For you</b><p>Matched to your flags: ${flags.lowSleep()?'Sleep &amp; wind-down, ':''}${flags.highStress()?'Stress &amp; calm, ':''}nutrition swaps.</p></div>
+       <div class="libgrid">${cards.map(c=>`<div class="libcard"><i>${c[0]}</i><span>${c[1]}</span><em class="${c[2]}">${c[3]}</em></div>`).join('')}</div>
+       <div class="legend">
+         <span><b style="background:var(--body)"></b>Strong</span>
+         <span><b style="background:var(--mind)"></b>Moderate</span>
+         <span><b style="background:var(--amber)"></b>Emerging</span>
+         <span><b style="background:var(--steel)"></b>Mixed</span>
+       </div>`;
+  },
+
+  ayu(){
+    return appbar('', false)+
+      `<div class="chat-head"><b>Ayu</b><span>AI WELLNESS COMPANION</span></div>
+       <div class="chat-scroll" id="chatScroll">
+         <div class="msg ayu">Sounds like a rough week. Want to try a 2-minute breathing reset before we talk it through?</div>
+         <div class="sources" data-act="sources">🔍 Sources checked (2)</div>
+         <div class="sources-detail" id="srcDetail">• Local library: “Sleep &amp; stress” (Strong)<br>• Live search: WHO stress-management brief</div>
+       </div>
+       <div class="composer">
+         <input id="ayuInput" placeholder="Message Ayu…" autocomplete="off">
+         <button data-act="send">➤</button>
+       </div>`;
+  },
+
+  rewards(){
+    return appbar('Rewards')+
+      `<div class="points-row"><div class="points">1,240</div><div class="tier">Silver tier</div></div>
+       <div class="pts-label">points</div>
+       <div class="shelf"><i class="b1">★</i><i class="b2">◆</i><i class="b3">●</i><i class="locked-badge">🔒</i><i class="locked-badge">🔒</i></div>
+       <div class="reward"><div class="row">Meal delivery credit <em>500 pts</em></div><small>Redeemable now</small></div>
+       <div class="reward locked"><div class="row">Wellness retreat stay <em>3,000 pts</em></div><small>🔒 Unlocks at Body/Mind Stage 2</small></div>
+       <div class="reward"><div class="row">Yoga workshop pass <em>800 pts</em></div><small>Redeemable now</small><span class="expiry">Expires in 3 days</span></div>`;
+  },
+
+  notifications(){
+    return `<div class="appbar"><button class="back" data-nav="dashboard" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">‹</button><span class="ttl" style="font-size:17px">Notifications</span><span style="width:20px"></span></div>
+      <div class="lockclock">9:41</div>
+      <div class="lockdate">Friday, 31 July</div>
+      <div class="notif reminder"><div class="ic">◐</div><div><b>Spandan</b><p>Two minutes for your mind today?</p></div></div>
+      <div class="notif celebrate"><div class="ic">★</div><div><b>Badge earned: Steady Rhythm</b><p>7 days in a row — that's a real rhythm.</p></div></div>
+      <div class="notif risk"><div class="ic">◑</div><div><b>Your streak is waiting</b><p>A couple of minutes keeps Day 6 alive.</p></div></div>
+      <div class="notif queued"><div class="ic">🌙</div><div><b>Queued — will arrive at 8:00 AM</b><p>Held back by quiet hours.</p></div></div>`;
+  }
+};
+
+/* ============================================================
+   EVENT DELEGATION
+   ============================================================ */
+function isCrisis(t){
+  return /(suicid|kill myself|end it all|hopeless|worthless|want to die|hurt myself|no reason to live|can't go on)/i.test(t);
+}
+document.addEventListener('click', e=>{
+  const t=e.target.closest('[data-act],[data-field],[data-value],[data-toggle],[data-seg],[data-chip],[data-single],[data-nav],[data-jview]');
+  if(!t) return;
+
+  // navigation (main app)
+  if(t.dataset.nav){ showApp(t.dataset.nav); return; }
+  if(t.dataset.jview){ journeyView=t.dataset.jview; showApp('journey'); return; }
+
+  // single-select option rows
+  if(t.dataset.field && t.dataset.value!==undefined){
+    state[t.dataset.field]=t.dataset.value; renderStep(); return;
+  }
+  // segmented
+  if(t.dataset.seg){ state[t.dataset.seg]=t.dataset.value; renderStep(); return; }
+  // chip single-select (alcohol qty, teacoffee)
+  if(t.dataset.single){ state[t.dataset.single]=t.dataset.value; renderStep(); return; }
+  // multi chips
+  if(t.dataset.chip){
+    const arr=state[t.dataset.chip], v=t.dataset.value;
+    // mutual-exclusion for "None yet"
+    if(t.dataset.chip==='habits'){
+      if(v==='None yet'){ state.habits = arr.includes('None yet')?[]:['None yet']; }
+      else { state.habits = arr.filter(x=>x!=='None yet'); const i=state.habits.indexOf(v); i>-1?state.habits.splice(i,1):state.habits.push(v); }
+    } else { const i=arr.indexOf(v); i>-1?arr.splice(i,1):arr.push(v); }
+    renderStep(); return;
+  }
+  // consent toggles
+  if(t.dataset.toggle){ state.consent[t.dataset.toggle]=!state.consent[t.dataset.toggle]; renderStep(); return; }
+
+  // actions
+  const act=t.dataset.act;
+  if(act==='next') goNext();
+  else if(act==='back') goBack();
+  else if(act==='skip'){
+    const step=FLOW[flowIndex];
+    if(step.id==='baseline' && baselineIdx<4){ /* skip whole baseline */ }
+    stopBreathing();
+    const ni=firstEligibleFrom(flowIndex+1,1);
+    ni===-1?finishOnboarding():(flowIndex=ni,baselineIdx=0,renderStep());
+  }
+  else if(act==='finish') finishOnboarding();
+  else if(act==='pair'){ state.wearablePaired=!state.wearablePaired; renderStep(); }
+  else if(act==='habit'){ habitDone=!habitDone; showApp('dashboard'); }
+  else if(act==='sources'){ document.getElementById('srcDetail')?.classList.toggle('open'); }
+  else if(act==='crisislines'){ t.closest('.crisis').querySelector('.lines').classList.toggle('open'); }
+  else if(act==='send') sendAyu();
+});
+
+// text + range inputs
+document.addEventListener('input', e=>{
+  const t=e.target;
+  if(t.dataset.field){
+    let v=t.value;
+    if(t.dataset.field==='age') v = v===''?null:parseInt(v,10);
+    if(t.dataset.field==='whatsapp') v = v.replace(/\D/g,'').slice(0,10);
+    state[t.dataset.field]=v;
+    // live-enable Next without full re-render (keeps focus)
+    const step=FLOW[flowIndex];
+    const cta=stage.querySelector('.cta[data-act="next"]');
+    if(cta && step.valid) cta.disabled=!step.valid();
+    if(t.dataset.field==='whatsapp') t.value=v;
+  }
+  if(t.dataset.range==='sleep'){ state.sleep=parseFloat(t.value); const el=document.getElementById('sleepVal'); if(el) el.textContent=t.value; }
+  if(t.dataset.baseline){ state.baseline[t.dataset.baseline]=parseInt(t.value,10); renderStep(); }
+});
+// enter key sends Ayu message
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.id==='ayuInput'){ e.preventDefault(); sendAyu(); }
+});
+
+function sendAyu(){
+  const input=document.getElementById('ayuInput');
+  const scroll=document.getElementById('chatScroll');
+  if(!input||!scroll) return;
+  const txt=input.value.trim(); if(!txt) return;
+  const u=document.createElement('div'); u.className='msg user'; u.textContent=txt; scroll.appendChild(u);
+  input.value='';
+  setTimeout(()=>{
+    if(isCrisis(txt)){
+      const c=document.createElement('div'); c.className='crisis';
+      c.innerHTML=`<b>You matter, and support is available right now.</b>
+        <p>Tap to see crisis helpline options — this is separate from your chat history.</p>
+        <button data-act="crisislines">See support options</button>
+        <div class="lines">
+          <div>KIRAN Mental Health<span>1800-599-0019 · 24×7, toll-free</span></div>
+          <div>Vandrevala Foundation<span>1860-2662-345 · 24×7</span></div>
+          <div>iCall (TISS)<span>9152987821 · Mon–Sat, 8am–10pm</span></div>
+        </div>`;
+      scroll.appendChild(c);
+    } else {
+      const a=document.createElement('div'); a.className='msg ayu';
+      a.textContent = "Thank you for telling me. Let's take it one small step — would a short wind-down routine tonight feel doable?";
+      scroll.appendChild(a);
+      const s=document.createElement('div'); s.className='sources'; s.dataset.act='sources'; s.textContent='🔍 Sources checked (1)';
+      scroll.appendChild(s);
+    }
+    scroll.scrollTop=scroll.scrollHeight;
+  },420);
+  scroll.scrollTop=scroll.scrollHeight;
+}
+
+/* ============================================================
+   PARTICLE FIELD
+   ============================================================ */
+const pcanvas=document.getElementById('pcanvas');
+const pctx=pcanvas.getContext('2d');
+pcanvas.width=376; pcanvas.height=770;
+function setParticles(strength){
+  pctx.clearRect(0,0,376,770);
+  const n=Math.round(220*strength)+30;
+  for(let i=0;i<n;i++){
+    const x=rnd()*376;
+    const band=560+Math.sin(x/60)*40;
+    const y=band+(rnd()-0.5)*220*rnd();
+    const r=rnd()*1.9+0.3;
+    const a=(rnd()*0.55+0.08)*strength;
+    pctx.beginPath(); pctx.arc(x,y,r,0,7);
+    pctx.fillStyle=`rgba(${rnd()>0.5?'0,212,255':'120,200,235'},${a})`;
+    pctx.fill();
+    if(rnd()>0.92){ pctx.shadowColor='rgba(0,212,255,.7)'; pctx.shadowBlur=6; pctx.fill(); pctx.shadowBlur=0; }
+  }
+}
+// deterministic-ish rng wrapper (Math.random is fine in-browser)
+function rnd(){ return Math.random(); }
+
+/* ============================================================
+   TOOLBAR (restart / autofill / jump)
+   ============================================================ */
+document.getElementById('restart').addEventListener('click', ()=>location.reload());
+
+document.getElementById('autofill').addEventListener('click', ()=>{
+  Object.assign(state,{
+    consent:{health:true,ayu:true,comms:false},
+    name:'Arjun', email:'arjun@email.com', age:34, gender:'Male', whatsapp:'9876543210',
+    sleep:5.5, activity:'Sedentary', movement:'Walking', stress:'High',
+    habits:['Walking','Meditation'], diet:'Vegetarian', smoking:'Never',
+    alcohol:'1–2×/week', alcoholQty:'3–4', alcoholBinge:'Monthly',
+    outsideMeals:'Regularly (3–4×/week)', teacoffee:'3–4',
+    baseline:{Mental:3,Physical:2,Social:4,Spiritual:3,Clarity:2},
+    mensVitality:'Some decline', mensSexual:'None',
+    goal:'', feelings:['Rested','Focused','Calm'], commitment:'Some changes'
+  });
+  alert('Onboarding auto-filled with a sample profile (low sleep + high stress → Tea/Coffee & Movement screens unlock; Sleep Quality will rank first). Use “Jump to screen” or click Next to walk through.');
+});
+
+// jump menu
+const jumpMenu=document.getElementById('jumpMenu');
+const JUMP_ON=[['welcome','1 Welcome'],['consent','2 Consent'],['name','3 Name'],['email','4 Email'],['agegender','5 Age & Gender'],['whatsapp','6 WhatsApp'],['sleep','7 Sleep'],['activity','8 Activity'],['movement','9 Movement*'],['stress','10 Stress'],['habits','11 Habits'],['diet','12 Diet'],['smoking','13 Smoking'],['alcohol','14 Alcohol'],['alcoholdetail','15 Alcohol Detail*'],['outsidemeals','16 Outside Meals'],['teacoffee','17 Tea/Coffee*'],['baseline','18 Baseline'],['health','19 Health*'],['wearable','20 Wearable'],['breathing','21 Breathing'],['snapshot','22 Snapshot'],['goal','23 Primary Goal'],['feelings','24 Feelings'],['commitment','25 Commitment'],['plan','26 Week 1 Plan']];
+const JUMP_APP=[['dashboard','27 Dashboard'],['library','28 Library'],['coach','29 Coach Connect'],['journey','30 My Journey'],['ayu','31 Ayu Chat'],['rewards','32 Rewards'],['notifications','33 Notifications']];
+jumpMenu.innerHTML='<b>Onboarding</b>'+JUMP_ON.map(j=>`<button data-jumpon="${j[0]}">${j[1]}</button>`).join('')
+  +'<b>Main App</b>'+JUMP_APP.map(j=>`<button data-jumpapp="${j[0]}">${j[1]}</button>`).join('');
+document.getElementById('jumpBtn').addEventListener('click',e=>{ e.stopPropagation(); jumpMenu.classList.toggle('open'); });
+document.addEventListener('click',e=>{ if(!e.target.closest('.jump')) jumpMenu.classList.remove('open'); });
+jumpMenu.addEventListener('click',e=>{
+  const on=e.target.dataset.jumpon, ap=e.target.dataset.jumpapp;
+  if(on){
+    stopBreathing();
+    stage.style.display='flex'; appstage.style.display='none'; bottomnav.style.display='none';
+    const idx=FLOW.findIndex(s=>s.id===on);
+    // force conditional screens visible when jumped to directly
+    flowIndex=idx; baselineIdx=0; renderStep();
+    jumpMenu.classList.remove('open');
+  }
+  if(ap){
+    stage.style.display='none'; appstage.style.display='flex'; bottomnav.style.display='flex';
+    showApp(ap); jumpMenu.classList.remove('open');
+  }
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderStep();
+</script>
+</body>
+</html>
