@@ -147,17 +147,18 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;cur
 .toggle-row.on .switch{background:var(--body)}.toggle-row.on .switch::after{left:23px}
 .linkrow{color:var(--brand);font-family:var(--display);font-size:12.5px;font-weight:600;margin:10px 2px 2px;cursor:pointer;display:inline-block}
 
-/* brand mark (dual rings) */
+/* brand mark — Spandan orb (same animation as v2) */
 .mark{position:relative;display:grid;place-items:center;margin:auto}
-.mark svg{width:100%;height:100%;overflow:visible;transform:rotate(-90deg)}
-.mk{fill:none;stroke-width:6;stroke-linecap:round;transform-origin:60px 60px}
-.mk-b{stroke:var(--body);stroke-dasharray:150 130;animation:spin 11s linear infinite}
-.mk-m{stroke:var(--mind);stroke-dasharray:120 106;animation:spin 8s linear infinite reverse}
-.mk-core{position:absolute;width:30%;height:30%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#8FE3C0,var(--brand));box-shadow:0 4px 14px rgba(46,155,214,.4)}
+.mark svg{width:100%;height:100%;overflow:visible}
+.mk{fill:none;stroke-linecap:round;transform-origin:60px 60px}
+.mk-b{stroke:var(--body);stroke-width:2.5;stroke-dasharray:70 220;filter:drop-shadow(0 0 8px var(--body));animation:spin 9s linear infinite}
+.mk-m{stroke:var(--mind);stroke-width:2.5;stroke-dasharray:55 190;filter:drop-shadow(0 0 8px var(--mind));animation:spin 6.5s linear infinite reverse}
+.mk-r{stroke:rgba(80,112,140,.4);stroke-width:1;stroke-dasharray:2 10;animation:spin 22s linear infinite}
+.mk-core{position:absolute;width:34%;height:34%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#8FE3C0,var(--mind));filter:blur(3px);animation:corepulse 4s ease-in-out infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* welcome */
-.wordmark{font-family:var(--display);font-size:44px;text-align:center;font-weight:700;letter-spacing:-1px;margin-top:24px;color:#22303e}
+.wordmark{font-family:var(--display);font-size:44px;text-align:center;font-weight:600;letter-spacing:-1px;margin-top:24px;color:#22303e}
 .tagline{text-align:center;color:var(--muted);font-size:15px;margin-top:8px}
 .value{font-family:var(--display);font-weight:500;font-size:22px;text-align:center;line-height:1.4;margin:44px 14px 0;color:#2b3a48}
 
@@ -188,10 +189,10 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;cur
 
 /* ===== app ===== */
 .appbar{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 2px}
-.appbar .ttl{font-family:var(--display);font-size:20px;font-weight:700}
+.appbar .ttl{font-family:var(--display);font-size:20px;font-weight:600}
 .hd{display:flex;align-items:center;justify-content:space-between}
 .hd .hi{color:var(--muted);font-size:14px}
-.hd .big{font-family:var(--display);font-weight:700;font-size:23px;margin-top:2px}
+.hd .big{font-family:var(--display);font-weight:600;font-size:23px;margin-top:2px}
 .hd .actions{display:flex;gap:10px;align-items:center}
 .iconbtn{width:44px;height:44px;border-radius:50%;background:var(--surface);box-shadow:var(--sh-sm);display:grid;place-items:center;font-size:16px;color:var(--brand);cursor:pointer;position:relative;border:none}
 .iconbtn .d{position:absolute;top:9px;right:11px;width:7px;height:7px;background:var(--danger);border-radius:50%}
@@ -214,7 +215,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;cur
 .mini-ring .l2 b{font-family:var(--display);font-weight:700;font-size:21px;line-height:1}
 .mini-ring .l2 span{font-size:7px;font-weight:700;letter-spacing:.8px;opacity:.9;margin-top:2px}
 .hero-verdict{margin-left:auto;text-align:right}
-.hero-verdict b{font-family:var(--display);font-weight:700;font-size:24px;display:block}
+.hero-verdict b{font-family:var(--display);font-weight:600;font-size:24px;display:block}
 .hero-verdict span{font-size:11.5px;opacity:.92}
 .statchips{position:relative;display:flex;gap:9px;margin-top:16px}
 .statchip{flex:1;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2);border-radius:var(--r-sm);padding:10px;text-align:center}
@@ -223,7 +224,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;cur
 
 /* section header */
 .sh{display:flex;align-items:center;justify-content:space-between;margin:22px 0 12px}
-.sh b{font-family:var(--display);font-weight:700;font-size:17px}
+.sh b{font-family:var(--display);font-weight:600;font-size:17px}
 .sh a{color:var(--faint);font-size:12.5px;font-weight:600;font-family:var(--display);cursor:pointer}
 
 /* quick actions */
@@ -266,7 +267,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;cur
 /* chat */
 .chat-head{display:flex;align-items:center;gap:12px;padding:8px 0 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
 .chat-head .av{width:42px;height:42px;flex-shrink:0}
-.chat-head b{font-family:var(--display);font-size:17px;font-weight:700}
+.chat-head b{font-family:var(--display);font-size:17px;font-weight:600}
 .chat-head span{display:block;color:var(--muted);font-size:9.5px;font-weight:700;letter-spacing:1px;margin-top:2px}
 .chat-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;scrollbar-width:none}
 .chat-scroll::-webkit-scrollbar{display:none}
@@ -435,7 +436,7 @@ function snapshotFlags(){const out=[];
   return out.slice(0,5);}
 
 /* ===== marks & rings ===== */
-function brandMark(size){return `<div class="mark" style="width:${size}px;height:${size}px"><svg viewBox="0 0 120 120"><circle class="mk mk-b" cx="60" cy="60" r="46"/><circle class="mk mk-m" cx="60" cy="60" r="36"/></svg><span class="mk-core"></span></div>`;}
+function brandMark(size){return `<div class="mark" style="width:${size}px;height:${size}px"><svg viewBox="0 0 120 120"><circle class="mk mk-r" cx="60" cy="60" r="54"/><circle class="mk mk-b" cx="60" cy="60" r="46"/><circle class="mk mk-m" cx="60" cy="60" r="37"/></svg><span class="mk-core"></span></div>`;}
 function miniRing(value,color,label){const off=214*(1-value/100);
   return `<div class="mini-ring"><svg width="80" height="80" viewBox="0 0 80 80"><circle class="rt" cx="40" cy="40" r="34"/><circle class="rf" cx="40" cy="40" r="34" stroke="${color}" stroke-dasharray="214" stroke-dashoffset="${off}"/></svg><div class="l2" data-nav="journey"><b>${value}</b><span>${label}</span></div></div>`;}
 
@@ -478,7 +479,7 @@ const FLOW=[
     if(state.gender==='Female')return topbar('Phase 3 · Wellness')+`<h2 class="title">A bit about your health</h2><div class="label-mini">Diagnosed with PCOS / PCOD?</div><div class="seg">${['Yes','No','Not sure'].map(v=>`<button class="seg-opt ${state.womensPcos===v?'selected':''}" data-seg="womensPcos" data-value="${v}">${v}</button>`).join('')}</div><div class="label-mini">How would you describe your periods?</div>${optList('periods',['Regular','Irregular','Peri / post-menopause'])}`+ctaFooter('Next',{disabled:!(state.womensPcos&&state.periods)});
     return topbar('Phase 3 · Wellness')+`<h2 class="title">A bit about your health</h2><div class="label-mini">How's your energy &amp; vitality?</div>${optList('mensVitality',['Steady','Some decline','Notable decline'])}<div class="label-mini">Any concerns with sexual health?</div><div class="seg">${['None','Some','Prefer not to say'].map(v=>`<button class="seg-opt ${state.mensSexual===v?'selected':''}" data-seg="mensSexual" data-value="${v}">${v}</button>`).join('')}</div>`+ctaFooter('Next',{disabled:!(state.mensVitality&&state.mensSexual)});}},
   { id:'wearable', phase:'Phase 3 · Wellness', render(){return topbar('Phase 3 · Wellness')+`<h2 class="title">Let your watch do some of this for you</h2><div class="action" data-act="pair" style="margin-top:24px;${state.wearablePaired?'border-color:var(--body-tint)':''}"><div class="play" style="${state.wearablePaired?'background:var(--body-tint);color:var(--body)':''}">${state.wearablePaired?'✓':'⌚'}</div><div><b>${state.wearablePaired?'Device paired':'Connect your watch'}</b><span>Apple Health, Google Fit &amp; common wearables</span></div></div><div class="spacer"></div><button class="cta" data-act="next">Next</button><button class="skip" data-act="skip">Skip</button>`;}},
-  { id:'breathing', phase:'Phase 4 · Reset', progress:false, render(){return `<div class="breathe-stage"><h2 class="title" style="text-align:center">Let's pause for a moment</h2><div class="breathe-circle" id="breatheCircle">${brandMark(96)}</div><div class="breathe-label" id="breatheLabel">Breathe in · 4s</div><div class="round" id="breatheRound">Round 1 of 3</div></div><button class="cta" data-act="next">Continue</button><button class="skip" data-act="skip">Skip</button>`;}},
+  { id:'breathing', phase:'Phase 4 · Reset', progress:false, render(){return `<div class="breathe-stage"><h2 class="title" style="text-align:center">Let's pause for a moment</h2><div id="breatheCircle" style="display:grid;place-items:center;transition:transform .12s linear">${brandMark(180)}</div><div class="breathe-label" id="breatheLabel">Breathe in · 4s</div><div class="round" id="breatheRound">Round 1 of 3</div></div><button class="cta" data-act="next">Continue</button><button class="skip" data-act="skip">Skip</button>`;}},
   { id:'snapshot', phase:'Phase 5 · Goals', render(){const n=wq(),band=wqBand(n);const fl=snapshotFlags().map(f=>`<div class="flag ${f.good?'good':''}"><i></i>${f.t}</div>`).join('');
     return topbar('Phase 5 · Goals')+`<h2 class="title">Here's what we're seeing${state.name?`, ${firstName()}`:''}</h2><div class="wq-card"><div class="cap">Wellness Quotient</div><div class="n">${n}</div><div class="band">${band.t}</div></div>${fl}`+ctaFooter('Continue');}},
   { id:'goal', phase:'Phase 5 · Goals', valid:()=>state.goal, render(){const rec=recommendedGoal();if(!state.goal)state.goal=rec;const opts=rankedGoals().map(g=>({value:g,label:g,badge:g===rec?'Recommended':undefined}));
