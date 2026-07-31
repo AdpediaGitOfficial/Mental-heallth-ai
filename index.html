@@ -41,7 +41,7 @@ h1,h2,h3,.d{font-family:var(--display)}
 .mock-header h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.5px;color:#22303e}
 .mock-header p{color:var(--muted);font-size:12.5px;margin-top:5px;max-width:430px;line-height:1.5}
 .toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
-.toolbar button{background:var(--surface);border:none;color:var(--muted);font-family:var(--display);font-size:11px;font-weight:600;padding:9px 15px;border-radius:var(--r-pill);cursor:pointer;transition:.2s;box-shadow:var(--sh-sm)}
+.toolbar button{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:none;color:var(--muted);font-family:var(--display);font-size:11px;font-weight:600;padding:9px 15px;border-radius:var(--r-pill);cursor:pointer;transition:.2s;box-shadow:var(--sh-sm)}
 .toolbar button:hover{color:var(--brand)}
 .jump{position:relative}
 .jump-menu{position:absolute;top:42px;left:50%;transform:translateX(-50%);background:var(--surface);border-radius:var(--r-md);padding:8px;display:none;grid-template-columns:1fr 1fr;gap:3px;z-index:50;width:290px;max-height:340px;overflow:auto;box-shadow:var(--sh-lg)}
@@ -400,9 +400,9 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;cur
 </div>
 
 <div class="toolbar">
-  <button id="restart">↻ Restart journey</button>
-  <button id="autofill">⚡ Auto-fill onboarding</button>
-  <div class="jump"><button id="jumpBtn">⤳ Jump to screen ▾</button><div class="jump-menu" id="jumpMenu"></div></div>
+  <button id="restart">Restart journey</button>
+  <button id="autofill">Auto-fill onboarding</button>
+  <div class="jump"><button id="jumpBtn">Jump to screen</button><div class="jump-menu" id="jumpMenu"></div></div>
 </div>
 
 <div class="phone">
@@ -490,7 +490,12 @@ lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0
 alert:'<path d="M12 3 2.5 20.5h19z"/><path d="M12 9.5v4.5"/><path d="M12 17.5v.4"/>',
 'arrow-up':'<path d="M12 20V5"/><path d="M6 11l6-6 6 6"/>',
 watch:'<circle cx="12" cy="12" r="6"/><path d="M12 9.5V12l1.8 1"/><path d="M8.5 4l.5-2h6l.5 2"/><path d="M8.5 20l.5 2h6l.5-2"/>',
-send:'<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>'
+send:'<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
+'arrow-right':'<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
+refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3.5V9h-5.5"/>',
+zap:'<path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor" stroke="none"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+'chevron-down':'<path d="M6 9l6 6 6-6"/>'
 };
 const icon=(n,s=20)=>`<svg class="ic-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${I[n]||''}</svg>`;
 
@@ -587,7 +592,7 @@ const APP={
     <div class="sh"><b>Your ladders</b></div>
     <div class="ladder"><label>BODY LADDER · STAGE 2 BUILD</label><div class="bar"><i style="width:55%;background:var(--body)"></i></div></div>
     <div class="ladder"><label>MIND LADDER · STAGE 1 SETTLE</label><div class="bar"><i style="width:30%;background:var(--mind)"></i></div></div>
-    <div class="nudge" data-nav="coach">Add lab values to complete your Metabolic picture →</div>`;},
+    <div class="nudge" data-nav="coach">Add lab values to complete your Metabolic picture ${icon('arrow-right',14)}</div>`;},
 
   journey(){const body=journeyView==='body';const pts=body?[[10,80],[50,72],[90,66],[130,58],[170,50],[210,46],[250,38]]:[[10,74],[50,70],[90,60],[130,64],[170,52],[210,48],[250,42]];const col=body?'#2FBF71':'#2E9BD6';
     const line=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" stroke="${col}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;const circles=pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${col}"/>`).join('');
@@ -636,8 +641,11 @@ function sendAyu(){const input=document.getElementById('ayuInput'),scroll=docume
   scroll.scrollTop=scroll.scrollHeight;}
 
 /* ===== toolbar ===== */
+document.getElementById('restart').innerHTML=icon('refresh',13)+' Restart journey';
+document.getElementById('autofill').innerHTML=icon('zap',13)+' Auto-fill onboarding';
+document.getElementById('jumpBtn').innerHTML=icon('list',13)+' Jump to screen '+icon('chevron-down',12);
 document.getElementById('restart').addEventListener('click',()=>location.reload());
-document.getElementById('autofill').addEventListener('click',()=>{Object.assign(state,{consent:{health:true,ayu:true,comms:false},name:'Arjun',email:'arjun@email.com',age:34,gender:'Male',whatsapp:'9876543210',sleep:5.5,activity:'Sedentary',movement:'Walking',stress:'High',habits:['Walking','Meditation'],diet:'Vegetarian',smoking:'Never',alcohol:'1–2×/week',alcoholQty:'3–4',alcoholBinge:'Monthly',outsideMeals:'Regularly (3–4×/week)',teacoffee:'3–4',baseline:{Mental:3,Physical:2,Social:4,Spiritual:3,Clarity:2},mensVitality:'Some decline',mensSexual:'None',goal:'',feelings:['Rested','Focused','Calm'],commitment:'Some changes'});alert('Onboarding auto-filled (low sleep + high stress + sedentary → Movement & Tea/Coffee unlock; Sleep Quality ranks first).');});
+document.getElementById('autofill').addEventListener('click',()=>{Object.assign(state,{consent:{health:true,ayu:true,comms:false},name:'Arjun',email:'arjun@email.com',age:34,gender:'Male',whatsapp:'9876543210',sleep:5.5,activity:'Sedentary',movement:'Walking',stress:'High',habits:['Walking','Meditation'],diet:'Vegetarian',smoking:'Never',alcohol:'1–2×/week',alcoholQty:'3–4',alcoholBinge:'Monthly',outsideMeals:'Regularly (3–4×/week)',teacoffee:'3–4',baseline:{Mental:3,Physical:2,Social:4,Spiritual:3,Clarity:2},mensVitality:'Some decline',mensSexual:'None',goal:'',feelings:['Rested','Focused','Calm'],commitment:'Some changes'});alert('Onboarding auto-filled (low sleep + high stress + sedentary -> Movement & Tea/Coffee unlock; Sleep Quality ranks first).');});
 const jumpMenu=document.getElementById('jumpMenu');
 const JUMP_ON=[['welcome','1 Welcome'],['consent','2 Consent'],['name','3 Name'],['email','4 Email'],['agegender','5 Age & Gender'],['whatsapp','6 WhatsApp'],['sleep','7 Sleep'],['activity','8 Activity'],['movement','9 Movement*'],['stress','10 Stress'],['habits','11 Habits'],['diet','12 Diet'],['smoking','13 Smoking'],['alcohol','14 Alcohol'],['alcoholdetail','15 Alcohol Detail*'],['outsidemeals','16 Outside Meals'],['teacoffee','17 Tea/Coffee*'],['baseline','18 Baseline'],['health','19 Health*'],['wearable','20 Wearable'],['breathing','21 Breathing'],['snapshot','22 Snapshot'],['goal','23 Primary Goal'],['feelings','24 Feelings'],['commitment','25 Commitment'],['plan','26 Week 1 Plan']];
 const JUMP_APP=[['dashboard','27 Dashboard'],['library','28 Library'],['coach','29 Coach Connect'],['journey','30 My Journey'],['ayu','31 Ayu Chat'],['rewards','32 Rewards'],['notifications','33 Notifications']];
