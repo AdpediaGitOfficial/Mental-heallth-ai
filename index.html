@@ -464,7 +464,7 @@ function topbar(phaseName){
     <span class="phaselabel">${phaseName||''}</span>
   </div>${FLOW[flowIndex].progress!==false?progressBar():''}`;
 }
-const norm = o => typeof o==='string' ? {value:o,label:o} : o;
+const norm = o => typeof o==='string' ? {value:o,label:o} : {...o, label:(o.label ?? o.value)};
 function optList(field, options, emerald){
   return options.map(norm).map(o=>{
     const sel = state[field]===o.value ? 'selected':'';
