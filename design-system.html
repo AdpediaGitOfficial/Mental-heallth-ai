@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spandan · Daylight — Design System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  /* ---- surfaces & background ---- */
+  --bg-top:#BFE1F3; --bg-mid:#D9E8F5; --bg-bot:#EDE9F6;
+  --surface:#FFFFFF; --surface-2:#F5F9FC;
+  /* ---- ink ---- */
+  --ink:#1B1E27; --muted:#6B7280; --faint:#9AA3B2;
+  --line:#EAF0F6;
+  /* ---- brand ---- */
+  --brand:#2E9BD6; --brand-2:#2A81C4; --brand-tint:#E4F2FB;
+  --brand-grad:linear-gradient(135deg,#46B1E4 0%,#2A81C4 100%);
+  /* ---- mind / body anchors ---- */
+  --mind:#2E9BD6; --mind-tint:#E4F2FB;
+  --body:#2FBF71; --body-tint:#E6F7EE;
+  /* ---- semantic ---- */
+  --success:#2FBF71; --success-tint:#E6F7EE;
+  --warning:#F2A93B; --warning-tint:#FCF1E0;
+  --danger:#EE4D4D;  --danger-tint:#FBE9EE;
+  --info:#3BA0D8;    --info-tint:#E4F2FB;
+  --reminder:#9C82E0;--reminder-tint:#EEE9FB;
+  /* ---- radius ---- */
+  --r-xs:12px; --r-sm:16px; --r-md:20px; --r-lg:24px; --r-xl:28px; --r-pill:999px;
+  /* ---- elevation ---- */
+  --sh-sm:0 4px 12px rgba(30,60,110,.06);
+  --sh-md:0 10px 28px rgba(30,60,110,.09);
+  --sh-lg:0 18px 44px rgba(30,60,110,.12);
+  --display:'Poppins',system-ui,sans-serif;
+  --ui:'Inter',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--ui);color:var(--ink);min-height:100vh;
+  background:linear-gradient(180deg,var(--bg-top) 0%,var(--bg-mid) 30%,var(--bg-bot) 100%) fixed;
+  -webkit-font-smoothing:antialiased;padding:40px 20px 80px}
+h1,h2,h3,h4,.d{font-family:var(--display)}
+.wrap{max-width:1120px;margin:0 auto}
+
+/* ---------- page header ---------- */
+.ds-head{margin-bottom:14px}
+.ds-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--surface);color:var(--brand);
+  font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.3px;padding:7px 14px;border-radius:var(--r-pill);box-shadow:var(--sh-sm)}
+.ds-eyebrow .spark{width:16px;height:16px;border-radius:50%;background:var(--brand-grad);display:grid;place-items:center;color:#fff;font-size:9px}
+.ds-head h1{font-weight:700;font-size:38px;letter-spacing:-1px;margin:16px 0 8px}
+.ds-head p{color:var(--muted);font-size:15px;max-width:640px;line-height:1.6}
+.ds-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.ds-meta span{background:rgba(255,255,255,.6);color:var(--muted);font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:var(--r-pill);font-family:var(--display)}
+
+/* ---------- section nav ---------- */
+.tocbar{position:sticky;top:12px;z-index:20;display:flex;gap:6px;flex-wrap:wrap;background:rgba(255,255,255,.7);
+  backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.8);padding:8px;border-radius:var(--r-pill);margin:24px 0 36px;box-shadow:var(--sh-sm)}
+.tocbar a{font-family:var(--display);font-size:12px;font-weight:600;color:var(--muted);padding:8px 14px;border-radius:var(--r-pill);text-decoration:none;transition:.2s}
+.tocbar a:hover{color:var(--brand);background:var(--brand-tint)}
+
+/* ---------- section shell ---------- */
+.section{margin-bottom:44px;scroll-margin-top:80px}
+.section-title{font-weight:700;font-size:22px;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.section-title .n{width:26px;height:26px;border-radius:8px;background:var(--brand-grad);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;font-family:var(--display)}
+.section-sub{color:var(--muted);font-size:13.5px;margin-bottom:20px;line-height:1.55}
+.panel{background:var(--surface);border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-md)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}.split{grid-template-columns:1fr!important}}
+.card{background:var(--surface);border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-md)}
+.card > .lbl{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin-bottom:14px;display:block}
+
+/* ---------- color swatches ---------- */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw{border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--sh-sm);cursor:pointer;background:var(--surface);transition:transform .15s}
+.sw:hover{transform:translateY(-2px)}
+.sw .chip{height:74px}
+.sw .meta{padding:10px 12px}
+.sw .meta b{font-family:var(--display);font-size:12.5px;font-weight:600;display:block}
+.sw .meta code{font-family:var(--ui);font-size:11px;color:var(--muted)}
+.sem-row{display:flex;align-items:center;gap:14px;padding:12px;border-radius:var(--r-sm);background:var(--surface-2);margin-bottom:10px}
+.sem-row .solid{width:44px;height:44px;border-radius:12px;flex-shrink:0;box-shadow:var(--sh-sm)}
+.sem-row .tintchip{width:44px;height:44px;border-radius:12px;flex-shrink:0}
+.sem-row .info b{font-family:var(--display);font-size:14px;display:block}
+.sem-row .info span{font-size:12px;color:var(--muted)}
+.sem-row code{margin-left:auto;font-size:11px;color:var(--faint);text-align:right;line-height:1.6}
+
+/* ---------- type specimen ---------- */
+.spec{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}
+.spec:last-child{border-bottom:none}
+.spec .tag{font-family:var(--ui);font-size:11px;color:var(--faint);white-space:nowrap;font-weight:600}
+.t-h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:-.5px}
+.t-h2{font-family:var(--display);font-weight:700;font-size:22px}
+.t-h3{font-family:var(--display);font-weight:600;font-size:16px}
+.t-num{font-family:var(--display);font-weight:700;font-size:30px}
+.t-body{font-family:var(--ui);font-weight:400;font-size:14px}
+.t-cap{font-family:var(--ui);font-weight:500;font-size:12px;color:var(--muted)}
+
+/* ---------- radius / spacing / elevation ---------- */
+.scale-row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.rbox{background:var(--brand-tint);border:2px solid var(--brand);width:74px;height:74px;display:grid;place-items:end center;padding:6px;color:var(--brand);font-family:var(--display);font-size:11px;font-weight:600}
+.sp-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.sp-cell{text-align:center}
+.sp-cell .bar{background:var(--brand);height:16px;border-radius:6px}
+.sp-cell span{font-family:var(--display);font-size:11px;color:var(--muted);display:block;margin-top:6px}
+.elev-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.elev{background:var(--surface);border-radius:var(--r-md);height:100px;display:grid;place-items:center;font-family:var(--display);font-size:12px;font-weight:600;color:var(--muted)}
+
+/* ---------- icon tiles ---------- */
+.tiles{display:flex;gap:14px;flex-wrap:wrap}
+.tile{width:56px;height:56px;border-radius:var(--r-sm);display:grid;place-items:center;font-size:22px}
+.tile.b{background:var(--brand-tint)} .tile.g{background:var(--success-tint)} .tile.a{background:var(--warning-tint)}
+.tile.r{background:var(--danger-tint)} .tile.p{background:var(--reminder-tint)}
+
+/* ============ COMPONENTS ============ */
+.demo{background:var(--surface-2);border-radius:var(--r-md);padding:22px}
+.demo.phone-bg{background:linear-gradient(180deg,var(--bg-top),var(--bg-bot))}
+
+/* buttons */
+.btn{font-family:var(--display);font-weight:600;font-size:14.5px;padding:14px 22px;border-radius:var(--r-sm);border:none;cursor:pointer;transition:.18s}
+.btn-primary{background:var(--brand-grad);color:#fff;box-shadow:0 8px 20px rgba(46,155,214,.32)}
+.btn-primary:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.btn-secondary{background:var(--surface);color:var(--brand);box-shadow:var(--sh-sm)}
+.btn-ghost{background:none;color:var(--muted)}
+.btn-block{width:100%}
+
+/* pills */
+.pill{font-family:var(--display);font-weight:600;font-size:12px;padding:7px 15px;border-radius:var(--r-pill);display:inline-block}
+.pill.today{background:var(--reminder-tint);color:var(--reminder)}
+.pill.upcoming{background:var(--info-tint);color:var(--info)}
+.pill.scheduled{background:var(--success-tint);color:var(--success)}
+.pill.normal{background:var(--success-tint);color:var(--success)}
+.pill.border{background:var(--warning-tint);color:var(--warning)}
+.pill.high{background:var(--danger-tint);color:var(--danger)}
+
+/* greeting header */
+.hd{display:flex;align-items:center;justify-content:space-between}
+.hd .hi{font-family:var(--ui);color:var(--muted);font-size:14px}
+.hd .big{font-family:var(--display);font-weight:700;font-size:24px;margin-top:2px}
+.hd .actions{display:flex;gap:10px;align-items:center}
+.iconbtn{width:46px;height:46px;border-radius:50%;background:var(--surface);box-shadow:var(--sh-sm);display:grid;place-items:center;font-size:17px;color:var(--brand);cursor:pointer}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--brand-grad);display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:600}
+
+/* hero vitals card (dual mind/body) */
+.hero{position:relative;overflow:hidden;border-radius:var(--r-xl);padding:20px;background:var(--brand-grad);color:#fff;box-shadow:0 16px 40px rgba(42,129,196,.3)}
+.hero::after{content:'';position:absolute;right:-60px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero::before{content:'';position:absolute;right:-30px;bottom:-70px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08)}
+.ai-pill{position:relative;display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.9);color:var(--brand);font-family:var(--display);font-weight:600;font-size:13px;padding:8px 15px;border-radius:var(--r-pill);box-shadow:var(--sh-sm)}
+.ai-pill .s{width:16px;height:16px;border-radius:50%;background:var(--brand-grad);display:grid;place-items:center;color:#fff;font-size:9px}
+.ai-pill .live{width:7px;height:7px;border-radius:50%;background:var(--brand);margin-left:2px}
+.hero-body{position:relative;display:flex;align-items:center;gap:8px;margin-top:18px}
+.dualrings{display:flex;gap:6px}
+.mini-ring{position:relative;width:82px;height:82px;text-align:center}
+.mini-ring svg{transform:rotate(-90deg)}
+.mini-ring .rt{fill:none;stroke:rgba(255,255,255,.25);stroke-width:7}
+.mini-ring .rf{fill:none;stroke-width:7;stroke-linecap:round}
+.mini-ring .lbl2{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.mini-ring .lbl2 b{font-family:var(--display);font-weight:700;font-size:22px;line-height:1}
+.mini-ring .lbl2 span{font-size:7.5px;font-weight:700;letter-spacing:1px;opacity:.9;margin-top:2px}
+.hero-verdict{margin-left:auto;text-align:right}
+.hero-verdict b{font-family:var(--display);font-weight:700;font-size:26px;display:block}
+.hero-verdict span{font-size:12px;opacity:.9}
+.statchips{position:relative;display:flex;gap:10px;margin-top:18px}
+.statchip{flex:1;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:var(--r-sm);padding:11px;text-align:center;backdrop-filter:blur(6px)}
+.statchip .v{font-family:var(--display);font-weight:700;font-size:15px}
+.statchip .k{font-size:10.5px;opacity:.85;margin-top:2px}
+
+/* quick actions */
+.qa{background:var(--surface);border-radius:var(--r-md);padding:16px 10px;text-align:center;box-shadow:var(--sh-sm);cursor:pointer;transition:.16s}
+.qa:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+.qa .qi{width:52px;height:52px;border-radius:var(--r-sm);background:var(--brand-tint);display:grid;place-items:center;font-size:22px;margin:0 auto 10px}
+.qa span{font-family:var(--display);font-weight:600;font-size:12.5px}
+
+/* section header pattern */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sh b{font-family:var(--display);font-weight:700;font-size:18px}
+.sh a{color:var(--faint);font-size:13px;font-weight:600;font-family:var(--display);text-decoration:none;cursor:pointer}
+
+/* biomarker / status list row */
+.bio{display:flex;align-items:center;gap:14px;padding:14px 15px;border-radius:var(--r-md);margin-bottom:11px}
+.bio.g{background:var(--success-tint)} .bio.a{background:var(--warning-tint)} .bio.r{background:var(--danger-tint)}
+.bio .bi{width:52px;height:52px;border-radius:var(--r-sm);background:var(--surface);display:grid;place-items:center;font-size:22px;flex-shrink:0;box-shadow:var(--sh-sm)}
+.bio .bt b{font-family:var(--display);font-weight:600;font-size:15px}
+.bio .status{font-family:var(--display);font-weight:600;font-size:12.5px;display:inline-flex;align-items:center;gap:5px;margin-left:4px}
+.bio .status i{width:7px;height:7px;border-radius:50%;display:inline-block;font-style:normal}
+.bio.g .status{color:var(--success)} .bio.g .status i{background:var(--success)}
+.bio.a .status{color:var(--warning)} .bio.a .status i{background:var(--warning)}
+.bio.r .status{color:var(--danger)} .bio.r .status i{background:var(--danger)}
+.bio .val{font-family:var(--display);font-weight:700;font-size:16px;margin-top:2px}
+.bio .val small{font-family:var(--ui);font-weight:500;font-size:11px;color:var(--muted)}
+.bio .spark{margin-left:auto}
+
+/* reminder row */
+.rem{display:flex;align-items:center;gap:14px;padding:14px 15px;border-radius:var(--r-md);background:var(--surface);box-shadow:var(--sh-sm);margin-bottom:11px}
+.rem .ri{width:48px;height:48px;border-radius:var(--r-sm);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.rem .rt b{font-family:var(--display);font-weight:600;font-size:15px;display:block}
+.rem .rt span{font-size:12px;color:var(--muted)}
+.rem .pill{margin-left:auto;flex-shrink:0}
+
+/* rings on white */
+.wring{position:relative;width:110px;height:110px;text-align:center}
+.wring svg{transform:rotate(-90deg)}
+.wring .rt{fill:none;stroke:var(--line);stroke-width:9}
+.wring .rf{fill:none;stroke-width:9;stroke-linecap:round}
+.wring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wring .c b{font-family:var(--display);font-weight:700;font-size:26px}
+.wring .c span{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--muted)}
+
+/* form controls */
+.opt{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-radius:var(--r-md);background:var(--surface);box-shadow:var(--sh-sm);margin-bottom:10px;cursor:pointer;font-family:var(--display);font-weight:600;font-size:14px;border:2px solid transparent}
+.opt small{display:block;font-family:var(--ui);font-weight:500;font-size:12px;color:var(--muted);margin-top:2px}
+.opt.sel{border-color:var(--brand);background:var(--brand-tint)}
+.opt .tick{color:var(--brand);opacity:0}.opt.sel .tick{opacity:1}
+.opt.sel.body{border-color:var(--body);background:var(--body-tint)}.opt.sel.body .tick{color:var(--body)}
+.chip{font-family:var(--display);font-weight:600;font-size:13px;padding:11px 17px;border-radius:var(--r-pill);background:var(--surface);box-shadow:var(--sh-sm);cursor:pointer;border:2px solid transparent}
+.chip.sel{border-color:var(--body);background:var(--body-tint);color:var(--body)}
+.seg{display:flex;gap:8px}
+.seg span{flex:1;text-align:center;padding:13px;border-radius:var(--r-sm);background:var(--surface);box-shadow:var(--sh-sm);font-family:var(--display);font-weight:600;font-size:13px;color:var(--muted);cursor:pointer;border:2px solid transparent}
+.seg span.sel{border-color:var(--brand);color:var(--brand);background:var(--brand-tint)}
+.tf{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-sm);padding:15px 16px;font-family:var(--ui);font-size:15px;color:var(--ink);outline:none}
+.tf:focus{border-color:var(--brand)}
+.sw2{width:50px;height:29px;border-radius:var(--r-pill);background:#D7E0EA;position:relative;cursor:pointer;transition:.2s}
+.sw2::after{content:'';position:absolute;top:3px;left:3px;width:23px;height:23px;border-radius:50%;background:#fff;box-shadow:var(--sh-sm);transition:.2s}
+.sw2.on{background:var(--body)}.sw2.on::after{left:24px}
+.slider{-webkit-appearance:none;width:100%;height:8px;border-radius:6px;background:var(--brand-tint);outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:5px solid var(--brand);box-shadow:var(--sh-sm);cursor:pointer}
+
+/* bottom nav */
+.bnav{display:flex;background:var(--surface);border-radius:var(--r-lg);padding:8px;box-shadow:var(--sh-md);gap:2px}
+.bnav b{flex:1;text-align:center;padding:9px 2px;border-radius:var(--r-sm);font-family:var(--display);font-size:9px;font-weight:600;color:var(--faint);cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center}
+.bnav b i{font-style:normal;font-size:18px}
+.bnav b.on{color:var(--brand);background:var(--brand-tint)}
+
+/* do & don't */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.dd{grid-template-columns:1fr}}
+.dd .col{background:var(--surface);border-radius:var(--r-md);padding:18px;box-shadow:var(--sh-sm)}
+.dd h4{font-family:var(--display);font-size:14px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.dd .do h4{color:var(--success)} .dd .dont h4{color:var(--danger)}
+.dd li{list-style:none;font-size:13px;color:var(--muted);line-height:1.5;padding:6px 0 6px 22px;position:relative}
+.dd .do li::before{content:'✓';position:absolute;left:0;color:var(--success);font-weight:700}
+.dd .dont li::before{content:'✕';position:absolute;left:0;color:var(--danger);font-weight:700}
+
+.copymsg{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-family:var(--display);font-size:13px;font-weight:600;padding:11px 20px;border-radius:var(--r-pill);opacity:0;transition:.25s;pointer-events:none;z-index:50}
+.copymsg.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.foot{text-align:center;color:var(--faint);font-size:12px;margin-top:40px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="ds-head">
+    <span class="ds-eyebrow"><span class="spark">✦</span> Aumi Edge · Spandan</span>
+    <h1>Daylight Design System</h1>
+    <p>A light, warm, health-companion language extracted from the reference dashboard — floating white surfaces on a sky-to-lavender gradient, colour-coded health semantics, and Spandan's signature dual Mind/Body anchors, restyled for daylight.</p>
+    <div class="ds-meta"><span>Poppins + Inter</span><span>Light theme</span><span>Dual anchors preserved</span><span>v1 · reference</span></div>
+  </header>
+
+  <nav class="tocbar">
+    <a href="#color">Colour</a><a href="#type">Type</a><a href="#shape">Shape</a>
+    <a href="#elevation">Elevation</a><a href="#icons">Icons</a><a href="#buttons">Buttons</a>
+    <a href="#header">Header</a><a href="#hero">Hero</a><a href="#actions">Quick actions</a>
+    <a href="#status">Status rows</a><a href="#reminders">Reminders</a><a href="#rings">Rings</a>
+    <a href="#forms">Forms</a><a href="#nav">Nav</a><a href="#guide">Guidelines</a>
+  </nav>
+
+  <!-- COLOUR -->
+  <section class="section" id="color">
+    <div class="section-title"><span class="n">01</span> Colour</div>
+    <p class="section-sub">A soft blue base with white surfaces. Colour is functional first — status green/amber/red carry meaning; brand blue carries action. Click any swatch to copy its hex.</p>
+    <div class="panel">
+      <span class="card-lbl" style="font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--faint)">FOUNDATION</span>
+      <div class="swatches" style="margin:14px 0 26px">
+        <div class="sw" data-hex="#BFE1F3"><div class="chip" style="background:linear-gradient(180deg,#BFE1F3,#EDE9F6)"></div><div class="meta"><b>Background</b><code>#BFE1F3 → #EDE9F6</code></div></div>
+        <div class="sw" data-hex="#FFFFFF"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"></div><div class="meta"><b>Surface</b><code>#FFFFFF</code></div></div>
+        <div class="sw" data-hex="#2E9BD6"><div class="chip" style="background:var(--brand-grad)"></div><div class="meta"><b>Brand</b><code>#2E9BD6 → #2A81C4</code></div></div>
+        <div class="sw" data-hex="#1B1E27"><div class="chip" style="background:#1B1E27"></div><div class="meta"><b>Ink</b><code>#1B1E27</code></div></div>
+        <div class="sw" data-hex="#6B7280"><div class="chip" style="background:#6B7280"></div><div class="meta"><b>Muted</b><code>#6B7280</code></div></div>
+        <div class="sw" data-hex="#9AA3B2"><div class="chip" style="background:#9AA3B2"></div><div class="meta"><b>Faint</b><code>#9AA3B2</code></div></div>
+      </div>
+      <span style="font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--faint)">MIND / BODY ANCHORS</span>
+      <div class="swatches" style="margin:14px 0 26px">
+        <div class="sw" data-hex="#2E9BD6"><div class="chip" style="background:#2E9BD6"></div><div class="meta"><b>Mind · Clarity</b><code>#2E9BD6</code></div></div>
+        <div class="sw" data-hex="#2FBF71"><div class="chip" style="background:#2FBF71"></div><div class="meta"><b>Body · Metabolic</b><code>#2FBF71</code></div></div>
+      </div>
+      <span style="font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--faint)">SEMANTIC · solid + tint</span>
+      <div style="margin-top:14px">
+        <div class="sem-row"><div class="solid" style="background:var(--success)"></div><div class="tintchip" style="background:var(--success-tint)"></div><div class="info"><b>Success · Normal</b><span>In-range biomarkers, completed, scheduled</span></div><code>#2FBF71<br>#E6F7EE</code></div>
+        <div class="sem-row"><div class="solid" style="background:var(--warning)"></div><div class="tintchip" style="background:var(--warning-tint)"></div><div class="info"><b>Warning · Borderline</b><span>Watch-list values, at-risk streaks</span></div><code>#F2A93B<br>#FCF1E0</code></div>
+        <div class="sem-row"><div class="solid" style="background:var(--danger)"></div><div class="tintchip" style="background:var(--danger-tint)"></div><div class="info"><b>Danger · High</b><span>Out-of-range values, crisis emphasis</span></div><code>#EE4D4D<br>#FBE9EE</code></div>
+        <div class="sem-row"><div class="solid" style="background:var(--info)"></div><div class="tintchip" style="background:var(--info-tint)"></div><div class="info"><b>Info · Upcoming</b><span>Neutral informational tags & links</span></div><code>#3BA0D8<br>#E4F2FB</code></div>
+        <div class="sem-row"><div class="solid" style="background:var(--reminder)"></div><div class="tintchip" style="background:var(--reminder-tint)"></div><div class="info"><b>Reminder · Today</b><span>Time-sensitive nudges, supplement tags</span></div><code>#9C82E0<br>#EEE9FB</code></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section class="section" id="type">
+    <div class="section-title"><span class="n">02</span> Typography</div>
+    <p class="section-sub"><b>Poppins</b> for display, headings, numbers and UI labels (friendly, rounded geometric); <b>Inter</b> for body copy and long text (quiet, legible).</p>
+    <div class="panel">
+      <div class="spec"><span class="t-h1">Good Morning!</span><span class="tag">H1 · Poppins Bold · 30/‑.5</span></div>
+      <div class="spec"><span class="t-h2">Recent Biomarkers</span><span class="tag">H2 · Poppins Bold · 22</span></div>
+      <div class="spec"><span class="t-h3">Vitamin D Supplement</span><span class="tag">Card title · Poppins SemiBold · 16</span></div>
+      <div class="spec"><span class="t-num">80<span style="font-size:14px;color:var(--muted)"> / 100</span></span><span class="tag">Metric · Poppins Bold · 30</span></div>
+      <div class="spec"><span class="t-body">Your vitals look great today — keep the rhythm going with a short walk.</span><span class="tag">Body · Inter · 14</span></div>
+      <div class="spec"><span class="t-cap">Today · 9:00 AM</span><span class="tag">Caption · Inter Medium · 12</span></div>
+    </div>
+  </section>
+
+  <!-- SHAPE -->
+  <section class="section" id="shape">
+    <div class="section-title"><span class="n">03</span> Shape &amp; spacing</div>
+    <p class="section-sub">Generous, friendly radii and an 4px spacing base. Nothing sharp; nothing cramped.</p>
+    <div class="grid g2 split">
+      <div class="card"><span class="lbl">Radius scale</span>
+        <div class="scale-row">
+          <div class="rbox" style="border-radius:12px">12</div>
+          <div class="rbox" style="border-radius:16px">16</div>
+          <div class="rbox" style="border-radius:20px">20</div>
+          <div class="rbox" style="border-radius:24px">24</div>
+          <div class="rbox" style="border-radius:28px">28</div>
+          <div class="rbox" style="border-radius:999px;width:74px">pill</div>
+        </div>
+      </div>
+      <div class="card"><span class="lbl">Spacing · 4px base</span>
+        <div class="sp-row">
+          <div class="sp-cell"><div class="bar" style="width:4px"></div><span>4</span></div>
+          <div class="sp-cell"><div class="bar" style="width:8px"></div><span>8</span></div>
+          <div class="sp-cell"><div class="bar" style="width:12px"></div><span>12</span></div>
+          <div class="sp-cell"><div class="bar" style="width:16px"></div><span>16</span></div>
+          <div class="sp-cell"><div class="bar" style="width:20px"></div><span>20</span></div>
+          <div class="sp-cell"><div class="bar" style="width:24px"></div><span>24</span></div>
+          <div class="sp-cell"><div class="bar" style="width:32px"></div><span>32</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ELEVATION -->
+  <section class="section" id="elevation">
+    <div class="section-title"><span class="n">04</span> Elevation</div>
+    <p class="section-sub">Soft, diffuse, cool-tinted shadows — cards <em>float</em> on the gradient. Borders are avoided; light and shadow define edges instead.</p>
+    <div class="panel"><div class="elev-row">
+      <div class="elev" style="box-shadow:var(--sh-sm)">sm · 0 4 12 / .06</div>
+      <div class="elev" style="box-shadow:var(--sh-md)">md · 0 10 28 / .09</div>
+      <div class="elev" style="box-shadow:var(--sh-lg)">lg · 0 18 44 / .12</div>
+    </div></div>
+  </section>
+
+  <!-- ICONS -->
+  <section class="section" id="icons">
+    <div class="section-title"><span class="n">05</span> Iconography</div>
+    <p class="section-sub">Rounded line/duotone icons live inside soft pastel tiles — the tint always matches the icon's semantic colour. Radius 16, tint at ~14% of the accent.</p>
+    <div class="panel"><div class="tiles">
+      <div class="tile b">📄</div><div class="tile b">💡</div><div class="tile b">📈</div>
+      <div class="tile g">💧</div><div class="tile a">🧡</div><div class="tile r">🩸</div>
+      <div class="tile p">🌿</div><div class="tile b">🩺</div><div class="tile g">🏃</div>
+    </div></div>
+  </section>
+
+  <!-- BUTTONS -->
+  <section class="section" id="buttons">
+    <div class="section-title"><span class="n">06</span> Buttons &amp; pills</div>
+    <div class="grid g2 split">
+      <div class="card"><span class="lbl">Buttons</span>
+        <div class="demo" style="display:flex;flex-direction:column;gap:12px">
+          <button class="btn btn-primary btn-block">Save &amp; Continue</button>
+          <button class="btn btn-secondary btn-block">Upload report</button>
+          <button class="btn btn-ghost btn-block">Maybe later</button>
+        </div>
+      </div>
+      <div class="card"><span class="lbl">Status pills</span>
+        <div class="demo" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">
+          <span class="pill normal">● Normal</span><span class="pill border">● Borderline</span><span class="pill high">● High</span>
+          <span class="pill today">Today</span><span class="pill upcoming">Upcoming</span><span class="pill scheduled">Scheduled</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HEADER -->
+  <section class="section" id="header">
+    <div class="section-title"><span class="n">07</span> Greeting header</div>
+    <p class="section-sub">Two-line greeting (light label + bold headline) balanced by circular white icon buttons and the avatar.</p>
+    <div class="panel phone-bg"><div class="demo phone-bg">
+      <div class="hd"><div><div class="hi">Hello Alex</div><div class="big">Good Morning!</div></div>
+        <div class="actions"><div class="iconbtn">🔔</div><div class="avatar">A</div></div></div>
+    </div></div>
+  </section>
+
+  <!-- HERO -->
+  <section class="section" id="hero">
+    <div class="section-title"><span class="n">08</span> Hero vitals card <span style="font-size:11px;font-weight:600;color:var(--brand);background:var(--brand-tint);padding:4px 10px;border-radius:999px;margin-left:6px">signature</span></div>
+    <p class="section-sub">The reference's single-score hero, adapted to hold Spandan's <b>dual Mind/Body anchors</b>. Blue gradient card · AI-assistant pill · two parity rings · verdict · glass stat chips.</p>
+    <div class="panel phone-bg"><div style="max-width:360px;margin:0 auto">
+      <div class="hero">
+        <div class="ai-pill"><span class="s">✦</span> AI Health Assistant <span class="live"></span></div>
+        <div class="hero-body">
+          <div class="dualrings">
+            <div class="mini-ring"><svg width="82" height="82" viewBox="0 0 82 82"><circle class="rt" cx="41" cy="41" r="34"/><circle class="rf" cx="41" cy="41" r="34" stroke="#5FE0A8" stroke-dasharray="214" stroke-dashoffset="60"/></svg><div class="lbl2"><b>72</b><span>METABOLIC</span></div></div>
+            <div class="mini-ring"><svg width="82" height="82" viewBox="0 0 82 82"><circle class="rt" cx="41" cy="41" r="34"/><circle class="rf" cx="41" cy="41" r="34" stroke="#FFFFFF" stroke-dasharray="214" stroke-dashoffset="68"/></svg><div class="lbl2"><b>68</b><span>CLARITY</span></div></div>
+          </div>
+          <div class="hero-verdict"><b>Excellent</b><span>Your vitals look great</span></div>
+        </div>
+        <div class="statchips">
+          <div class="statchip"><div class="v">7h 20m</div><div class="k">💤 Sleep</div></div>
+          <div class="statchip"><div class="v">8,240</div><div class="k">👟 Steps</div></div>
+          <div class="statchip"><div class="v">1.6 L</div><div class="k">💧 Water</div></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- QUICK ACTIONS -->
+  <section class="section" id="actions">
+    <div class="section-title"><span class="n">09</span> Quick actions</div>
+    <div class="panel phone-bg">
+      <div class="sh"><b>Quick Actions</b></div>
+      <div class="grid g4">
+        <div class="qa"><div class="qi">📄</div><span>Upload Report</span></div>
+        <div class="qa"><div class="qi">💡</div><span>AI Insights</span></div>
+        <div class="qa"><div class="qi">📈</div><span>Trends</span></div>
+        <div class="qa"><div class="qi">🔔</div><span>Reminders</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS ROWS -->
+  <section class="section" id="status">
+    <div class="section-title"><span class="n">10</span> Status list rows</div>
+    <p class="section-sub">The core data row: pastel-tinted by status, with an icon tile, label + status dot, value, and a matching sparkline. Green / amber / red are never used decoratively — only to signal range.</p>
+    <div class="panel phone-bg">
+      <div class="sh"><b>Recent Biomarkers</b><a>View all</a></div>
+      <div class="bio g"><div class="bi">💧</div><div class="bt"><b>Glucose<span class="status"><i></i>Normal</span></b><div class="val">94 <small>Mg/dl</small></div></div>
+        <svg class="spark" width="70" height="34"><polyline points="2,24 14,18 26,22 38,10 50,16 62,6" fill="none" stroke="#2FBF71" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+      <div class="bio a"><div class="bi">🧡</div><div class="bt"><b>Cholesterol<span class="status"><i></i>Borderline</span></b><div class="val">212 <small>Mg/dl</small></div></div>
+        <svg class="spark" width="70" height="34"><polyline points="2,22 14,24 26,10 38,14 50,8 62,12" fill="none" stroke="#F2A93B" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+      <div class="bio r" style="margin-bottom:0"><div class="bi">🩸</div><div class="bt"><b>Blood Pressure<span class="status"><i></i>Borderline</span></b><div class="val">138/90 <small>MmHg</small></div></div>
+        <svg class="spark" width="70" height="34"><polyline points="2,20 14,14 26,24 38,12 50,18 62,8" fill="none" stroke="#EE4D4D" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+    </div>
+  </section>
+
+  <!-- REMINDERS -->
+  <section class="section" id="reminders">
+    <div class="section-title"><span class="n">11</span> Reminder rows</div>
+    <div class="panel phone-bg">
+      <div class="sh"><b>Upcoming Reminders</b><a>Manage</a></div>
+      <div class="rem"><div class="ri" style="background:var(--reminder-tint)">🌿</div><div class="rt"><b>Vitamin D Supplement</b><span>Today · 9:00 AM</span></div><span class="pill today">Today</span></div>
+      <div class="rem"><div class="ri" style="background:var(--info-tint)">🩺</div><div class="rt"><b>Dr. Mehra Consultation</b><span>Today · 9:00 AM</span></div><span class="pill upcoming">Upcoming</span></div>
+      <div class="rem" style="margin-bottom:0"><div class="ri" style="background:var(--success-tint)">🏃</div><div class="rt"><b>Cardio · 30 Min</b><span>Fri · 6:00 PM</span></div><span class="pill scheduled">Scheduled</span></div>
+    </div>
+  </section>
+
+  <!-- RINGS -->
+  <section class="section" id="rings">
+    <div class="section-title"><span class="n">12</span> Progress rings</div>
+    <p class="section-sub">On white surfaces, the dual anchors read in full colour — Metabolic emerald, Clarity blue, always equal size (the spec's parity rule). A single ring is used for composite scores.</p>
+    <div class="panel"><div class="demo" style="display:flex;gap:30px;justify-content:center;flex-wrap:wrap">
+      <div class="wring"><svg width="110" height="110" viewBox="0 0 110 110"><circle class="rt" cx="55" cy="55" r="45"/><circle class="rf" cx="55" cy="55" r="45" stroke="#2FBF71" stroke-dasharray="283" stroke-dashoffset="79"/></svg><div class="c"><b>72</b><span>METABOLIC</span></div></div>
+      <div class="wring"><svg width="110" height="110" viewBox="0 0 110 110"><circle class="rt" cx="55" cy="55" r="45"/><circle class="rf" cx="55" cy="55" r="45" stroke="#2E9BD6" stroke-dasharray="283" stroke-dashoffset="91"/></svg><div class="c"><b>68</b><span>CLARITY</span></div></div>
+      <div class="wring"><svg width="110" height="110" viewBox="0 0 110 110"><circle class="rt" cx="55" cy="55" r="45"/><circle class="rf" cx="55" cy="55" r="45" stroke="#2E9BD6" stroke-dasharray="283" stroke-dashoffset="57"/></svg><div class="c"><b>80</b><span>VITALS</span></div></div>
+    </div></div>
+  </section>
+
+  <!-- FORMS -->
+  <section class="section" id="forms">
+    <div class="section-title"><span class="n">13</span> Form controls</div>
+    <p class="section-sub">Onboarding selectables. Brand-blue selection for single choices; body-emerald for multi-select — echoing the Mind/Body colour logic.</p>
+    <div class="grid g2 split">
+      <div class="card"><span class="lbl">Option rows &amp; segmented</span>
+        <div class="demo">
+          <div class="opt sel"><span>Sedentary<small>Mostly sitting</small></span><span class="tick">✓</span></div>
+          <div class="opt"><span>Light<small>Some walking</small></span><span class="tick">✓</span></div>
+          <div class="seg" style="margin-top:14px"><span class="sel">Female</span><span>Male</span><span>Other</span></div>
+        </div>
+      </div>
+      <div class="card"><span class="lbl">Chips · input · toggle · slider</span>
+        <div class="demo">
+          <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px"><span class="chip sel">Calm</span><span class="chip">Focused</span><span class="chip sel">Rested</span></div>
+          <input class="tf" placeholder="you@email.com" style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><span style="font-family:var(--display);font-weight:600;font-size:14px">Ayu conversations</span><div class="sw2 on"></div></div>
+          <input type="range" class="slider" min="3" max="12" value="7">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAV -->
+  <section class="section" id="nav">
+    <div class="section-title"><span class="n">14</span> Bottom navigation</div>
+    <div class="panel phone-bg"><div style="max-width:360px;margin:0 auto"><div class="bnav">
+      <b class="on"><i>◎</i>Home</b><b><i>📈</i>Journey</b><b><i>🧭</i>Coach</b><b><i>✦</i>Ayu</b><b><i>🎁</i>Rewards</b>
+    </div></div></div>
+  </section>
+
+  <!-- GUIDELINES -->
+  <section class="section" id="guide">
+    <div class="section-title"><span class="n">15</span> Guidelines</div>
+    <div class="dd">
+      <div class="col do"><h4>◎ Do</h4><ul>
+        <li>Let cards float on the gradient with soft shadows — no hard borders.</li>
+        <li>Use green/amber/red only to signal health range or risk, never decoration.</li>
+        <li>Keep Mind (blue) and Body (emerald) rings equal size, always paired.</li>
+        <li>Pair every icon with a tint tile in its own semantic colour.</li>
+        <li>Reserve the blue gradient for the single hero card per screen.</li>
+      </ul></div>
+      <div class="col dont"><h4>✕ Don't</h4><ul>
+        <li>Don't place the blue gradient behind body text or multiple cards.</li>
+        <li>Don't mix status colours (e.g. a green value with an amber sparkline).</li>
+        <li>Don't shrink one anchor ring below the other — parity is a hard rule.</li>
+        <li>Don't use pure black (#000) or hard 1px borders — use Ink + shadow.</li>
+        <li>Don't stack more than one high-emphasis (red/gradient) element per view.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <p class="foot">Spandan · Daylight — extracted from the reference dashboard.<br>Documentation only · the 33-screen prototype rebuild follows on sign-off.</p>
+</div>
+
+<div class="copymsg" id="copymsg">Copied</div>
+<script>
+const msg=document.getElementById('copymsg');
+document.querySelectorAll('.sw').forEach(s=>s.addEventListener('click',()=>{
+  const hex=s.dataset.hex||'';
+  if(navigator.clipboard) navigator.clipboard.writeText(hex).catch(()=>{});
+  msg.textContent='Copied '+hex; msg.classList.add('show');
+  clearTimeout(window._ct); window._ct=setTimeout(()=>msg.classList.remove('show'),1300);
+}));
+</script>
+</body>
+</html>
